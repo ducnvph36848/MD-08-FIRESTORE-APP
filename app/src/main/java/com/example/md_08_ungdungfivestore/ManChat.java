@@ -75,13 +75,14 @@ public class ManChat extends AppCompatActivity {
         Gson gson = new Gson();
         // JSON gửi lên API
         JsonObject json = new JsonObject();
-        json.addProperty("model", "gpt-4o-mini");
+        json.addProperty("model", "gpt-5-nano");
         JsonArray messages = new JsonArray();
         JsonObject system = new JsonObject();
         system.addProperty("role", "system");
         //hướng dẫn, ngữ cảnh, hoặc vai trò cho AI
         system.addProperty("content", "Bạn là tư vấn viên bán quần áo thời trang, trả lời ngắn gọn.");
         messages.add(system);
+
         JsonObject user = new JsonObject();
         user.addProperty("role", "user");
         user.addProperty("content", message);
