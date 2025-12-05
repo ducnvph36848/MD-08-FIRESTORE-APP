@@ -114,23 +114,23 @@
                 android:background="#121212">
 
                 <Button
-                    android:id="@+id/btnOrderNow"
+                    android:id="@+id/btnAddToCart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="Đặt hàng"
+                    android:text="Thêm vào giỏ hàng"
                     android:backgroundTint="#D17842"
                     android:textColor="#FFFFFF"
                     android:textAllCaps="false"
                     android:padding="12dp"/>
 
                 <Button
-                    android:id="@+id/btnAddToCart"
+                    android:id="@+id/btnOrderNow"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Thêm vào giỏ hàng"
+                    android:text="Đặt hàng"
                     android:backgroundTint="#D17842"
                     android:textColor="#FFFFFF"
                     android:textAllCaps="false"
