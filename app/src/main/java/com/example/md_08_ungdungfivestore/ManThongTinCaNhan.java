@@ -20,21 +20,19 @@ public class ManThongTinCaNhan extends AppCompatActivity {
 
     private SharedPreferences prefs;
 
-    private static final String PREF_NAME      = "user_profile";
-    private static final String KEY_NAME       = "name";
-    private static final String KEY_EMAIL      = "email";
-    private static final String KEY_PHONE      = "phone";
-    private static final String KEY_ADDRESS    = "address";
+    private static final String PREF_NAME   = "user_profile";
+    private static final String KEY_NAME    = "name";
+    private static final String KEY_EMAIL   = "email";
+    private static final String KEY_PHONE   = "phone";
+    private static final String KEY_ADDRESS = "address";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_thong_tin_ca_nhan); // đổi đúng tên layout của bạn
+        setContentView(R.layout.activity_thong_tin_ca_nhan);
 
-        // Khởi tạo SharedPreferences
         prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-        // Ánh xạ view
         quayLaiBtn  = findViewById(R.id.quayLaiBtn);
         imgAvatar   = findViewById(R.id.imgAvatar);
         edtName     = findViewById(R.id.edtName);
@@ -43,13 +41,10 @@ public class ManThongTinCaNhan extends AppCompatActivity {
         edtAddress  = findViewById(R.id.edtAddress);
         btnSave     = findViewById(R.id.btnSave);
 
-        // Nút quay lại: đóng màn hình này → quay về màn trước (CaiDatActivity)
         quayLaiBtn.setOnClickListener(v -> finish());
 
-        // Load dữ liệu đã lưu (nếu có)
         loadUserInfo();
 
-        // Xử lý nút Lưu thông tin
         btnSave.setOnClickListener(v -> saveUserInfo());
     }
 
@@ -60,11 +55,9 @@ public class ManThongTinCaNhan extends AppCompatActivity {
         String address = prefs.getString(KEY_ADDRESS, "");
 
         edtName.setText(name);
-        edtEmail.setText(email);   // đang disable nên chỉ hiển thị
+        edtEmail.setText(email);
         edtPhone.setText(phone);
         edtAddress.setText(address);
-
-        // TODO: sau này nếu có avatar thật thì load ở đây (từ URL hoặc Uri)
     }
 
     private void saveUserInfo() {
@@ -73,7 +66,6 @@ public class ManThongTinCaNhan extends AppCompatActivity {
         String phone   = edtPhone.getText()   != null ? edtPhone.getText().toString().trim()   : "";
         String address = edtAddress.getText() != null ? edtAddress.getText().toString().trim() : "";
 
-        // Validate đơn giản
         if (name.isEmpty()) {
             edtName.setError("Vui lòng nhập họ tên");
             edtName.requestFocus();
@@ -85,8 +77,6 @@ public class ManThongTinCaNhan extends AppCompatActivity {
             edtPhone.requestFocus();
             return;
         }
-
-        // Có thể thêm validate phone (độ dài, chỉ số, …) nếu cần
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_NAME, name);

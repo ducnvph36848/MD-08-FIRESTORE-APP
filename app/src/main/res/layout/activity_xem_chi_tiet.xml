@@ -9,7 +9,6 @@
         android:id="@+id/scrollContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/footerLayout"
         android:padding="16dp">
 
         <LinearLayout
@@ -47,7 +46,6 @@
                     android:layout_margin="16dp"
                     android:layout_gravity="end|top"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:tint="#FFFFFF"
                     android:src="@drawable/heart_empty"
                     android:contentDescription="Yêu thích" />
 
@@ -107,42 +105,42 @@
                 android:textSize="14sp"
                 android:layout_marginTop="8dp"
                 android:lineSpacingMultiplier="1.2"/>
+            <LinearLayout
+                android:id="@+id/footerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="#121212">
 
+                <Button
+                    android:id="@+id/btnOrderNow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Đặt hàng"
+                    android:backgroundTint="#D17842"
+                    android:textColor="#FFFFFF"
+                    android:textAllCaps="false"
+                    android:padding="12dp"/>
+
+                <Button
+                    android:id="@+id/btnAddToCart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Thêm vào giỏ hàng"
+                    android:backgroundTint="#D17842"
+                    android:textColor="#FFFFFF"
+                    android:textAllCaps="false"
+                    android:padding="12dp"/>
+            </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
 
     <!-- Footer: hai nút luôn nằm dưới cùng -->
-    <LinearLayout
-        android:id="@+id/footerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="#121212">
 
-        <Button
-            android:id="@+id/btnOrderNow"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="Đặt hàng"
-            android:backgroundTint="#D17842"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            android:padding="12dp"/>
-
-        <Button
-            android:id="@+id/btnAddToCart"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Thêm vào giỏ hàng"
-            android:backgroundTint="#D17842"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            android:padding="12dp"/>
-    </LinearLayout>
 
 </RelativeLayout>

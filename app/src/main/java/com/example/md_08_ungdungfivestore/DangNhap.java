@@ -63,18 +63,18 @@ import retrofit2.Response;
                     return;
                 }
 
-                // ===== Kiểm tra mật khẩu =====
-                if (password.length() < 6) {
-                    edtPassword.setError("Mật khẩu phải từ 6 ký tự trở lên ");
-                    edtPassword.requestFocus();
-                    return;
-                }
-
-                if (!password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*")) {
-                    edtPassword.setError("Mật khẩu phải bao gồm cả chữ và số");
-                    edtPassword.requestFocus();
-                    return;
-                }
+//                // ===== Kiểm tra mật khẩu =====
+//                if (password.length() < 6) {
+//                    edtPassword.setError("Mật khẩu phải từ 6 ký tự trở lên ");
+//                    edtPassword.requestFocus();
+//                    return;
+//                }
+//
+//                if (!password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*")) {
+//                    edtPassword.setError("Mật khẩu phải bao gồm cả chữ và số");
+//                    edtPassword.requestFocus();
+//                    return;
+//                }
 
                 // Nếu hợp lệ, gọi API login
                 loginUser(email, password);

@@ -20,7 +20,7 @@ import com.example.md_08_ungdungfivestore.R;
 
 public class TrangCaNhanFragment extends Fragment {
 
-    private ImageView btnBack;
+
     private LinearLayout btnDonHang, btnTheNganHang, btnThongTinCaNhan, btnLienHe, btnDangXuat;
 
     public TrangCaNhanFragment() {
@@ -43,7 +43,7 @@ public class TrangCaNhanFragment extends Fragment {
     }
 
     private void anhXa(View view) {
-        btnBack = view.findViewById(R.id.btnBack);
+
         btnDonHang = view.findViewById(R.id.btnDonHang);
         btnTheNganHang = view.findViewById(R.id.btnTheNganHang);
         btnThongTinCaNhan = view.findViewById(R.id.btnThongTinCaNhan);
@@ -52,27 +52,27 @@ public class TrangCaNhanFragment extends Fragment {
     }
 
     private void setupListeners() {
-        btnBack.setOnClickListener(v -> {
-            // Nếu là fragment trong bottom nav thì có thể không cần back,
-            // hoặc back về trang chủ. Tạm thời để trống hoặc Toast.
-            Toast.makeText(getContext(), "Quay lại", Toast.LENGTH_SHORT).show();
-        });
 
+        // 1. Chuyển sang màn Đơn hàng
         btnDonHang.setOnClickListener(
                 v -> {
                     Log.d("A","START");
                     this.getContext().startActivity(new Intent(this.getContext(), ManDonHang.class));
                 });
-
+        // 2. Thẻ ngân hàng (chưa làm)
         btnTheNganHang.setOnClickListener(v -> Toast
                 .makeText(getContext(), "Tính năng Thẻ ngân hàng đang phát triển", Toast.LENGTH_SHORT).show());
 
-        btnThongTinCaNhan.setOnClickListener(v -> Toast
-                .makeText(getContext(), "Tính năng Thông tin cá nhân đang phát triển", Toast.LENGTH_SHORT).show());
+        // 3. Mở trang cá nhân
+        btnThongTinCaNhan.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), com.example.md_08_ungdungfivestore.ManThongTinCaNhan.class);
+            startActivity(intent);
+        });
 
+        // 4. Mở màn liên hệ
         btnLienHe.setOnClickListener(
                 v -> Toast.makeText(getContext(), "Tính năng Liên hệ đang phát triển", Toast.LENGTH_SHORT).show());
-
+        // 5. Đăng xuất
         btnDangXuat.setOnClickListener(v -> {
             // Clear token
             com.example.md_08_ungdungfivestore.utils.TokenManager tokenManager = new com.example.md_08_ungdungfivestore.utils.TokenManager(

@@ -31,7 +31,6 @@
         android:src="@android:drawable/ic_delete"
         android:background="@drawable/bg_image_rounded"
         android:backgroundTint="#80000000"
-        android:tint="#FF6B6B"
         android:contentDescription="Xóa khỏi yêu thích"
         app:layout_constraintTop_toTopOf="@id/imgProduct"
         app:layout_constraintEnd_toEndOf="@id/imgProduct" />

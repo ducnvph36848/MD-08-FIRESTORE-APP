@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.md_08_ungdungfivestore.fragments.TrangCaNhanFragment;
+
 public class ManLienHe extends AppCompatActivity {
 
     private EditText edtHoTen, edtSDT, edtEmail, edtDiaChi, edtNoiDung;
@@ -43,7 +45,7 @@ public class ManLienHe extends AppCompatActivity {
 
         // NÚT QUAY LẠI -> về ManCaiDat
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(ManLienHe.this, CaiDatActivity.class);
+            Intent intent = new Intent(ManLienHe.this, TrangCaNhanFragment.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             // (tuỳ chọn) hiệu ứng chuyển trang nếu có file anim

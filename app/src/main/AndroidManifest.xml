@@ -52,7 +52,7 @@
             android:name=".ManDangKy"
             android:exported="false" />
         <activity
-            android:name=".ManChao"
+            android:name=".ManChat"
             android:exported="false" />
         <activity
             android:name=".GuiMaXacNhan"
@@ -70,7 +70,11 @@
             android:name=".ManThongTinDonHang"
             android:exported="true" />
         <activity
-            android:name=".ManChat"
+            android:name=".ManThongTinCaNhan"
+            android:exported="true" />
+
+        <activity
+            android:name=".ManChao"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
