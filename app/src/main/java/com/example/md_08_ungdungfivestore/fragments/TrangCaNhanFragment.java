@@ -62,13 +62,9 @@ public class TrangCaNhanFragment extends Fragment {
         // 2. Thẻ ngân hàng (chưa làm)
         btnTheNganHang.setOnClickListener(v -> Toast
                 .makeText(getContext(), "Tính năng Thẻ ngân hàng đang phát triển", Toast.LENGTH_SHORT).show());
-
         // 3. Mở trang cá nhân
-        btnThongTinCaNhan.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), com.example.md_08_ungdungfivestore.ManThongTinCaNhan.class);
-            startActivity(intent);
-        });
-
+        btnThongTinCaNhan.setOnClickListener(v -> Toast
+                .makeText(getContext(), "Tính năng Thông tin cá nhân đang phát triển", Toast.LENGTH_SHORT).show());
         // 4. Mở màn liên hệ
         btnLienHe.setOnClickListener(
                 v -> Toast.makeText(getContext(), "Tính năng Liên hệ đang phát triển", Toast.LENGTH_SHORT).show());

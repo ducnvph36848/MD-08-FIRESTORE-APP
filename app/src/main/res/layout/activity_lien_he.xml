@@ -56,13 +56,13 @@
                 android:id="@+id/edtHoTen"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/bg_input_contact"
-                android:hint="Họ tên"
+                android:hint="SDT"
                 android:paddingHorizontal="14dp"
                 android:textColor="#1A1A1A"
                 android:textColorHint="#8E96A3"
-                android:inputType="textPersonName"/>
+                android:inputType="phone"/>
 
             <EditText
                 android:id="@+id/edtSDT"
@@ -116,7 +116,7 @@
                 android:overScrollMode="always"/>
 
             <!-- Nút Gửi -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGui"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
@@ -125,7 +125,9 @@
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
-                android:background="@drawable/bg_primary_button"/>
+                app:cornerRadius="28dp"
+                app:backgroundTint="#FFA500"/>
+
 
             <!-- Khối thông tin liên hệ dưới cùng -->
             <LinearLayout
@@ -154,7 +156,7 @@
                         android:id="@+id/tvPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Số điện thoại: 0909 999 888"
+                        android:text="Số điện thoại: 0584 720 666"
                         android:textColor="#DA7A44"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -179,7 +181,7 @@
                         android:id="@+id/tvEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Email: lienhe@quancaphe.com"
+                        android:text="Email: FiveStore@Gmail.com"
                         android:textColor="#DA7A44"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -204,7 +206,7 @@
                         android:id="@+id/tvAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Địa chỉ: 123 Lê Lợi, Quận 1, TP.HCM"
+                        android:text="Địa chỉ: 136 Hồ Tùng Mậu,Mai Dịch,Bắc Từ Liêm,Hà Nội "
                         android:textColor="#DA7A44"
                         android:textSize="14sp"/>
                 </LinearLayout>

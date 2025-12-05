@@ -8,15 +8,7 @@
     android:paddingTop="16dp"
     tools:context=".fragments.TrangChuFragment">
 
-    <TextView
-        android:id="@+id/tvSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tìm quần áo yêu thích nhất của bạn"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:layout_margin="16dp"
-        android:fontFamily="@font/poppins_semibold" />
+
 
     <EditText
         android:id="@+id/timKiemEditText"
