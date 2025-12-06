@@ -81,8 +81,14 @@ import retrofit2.Response;
             });
 
             // Nút chuyển sang màn đăng ký
+            // Nút chuyển sang màn đăng ký
             tvRegister.setOnClickListener(v -> {
                 startActivity(new Intent(DangNhap.this, ManDangKy.class));
+            });
+
+            // Nút quên mật khẩu
+            findViewById(R.id.tvResetDangNhap).setOnClickListener(v -> {
+                startActivity(new Intent(DangNhap.this, GuiMaXacNhan.class));
             });
         }
 

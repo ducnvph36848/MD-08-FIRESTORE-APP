@@ -9,20 +9,38 @@ public class UpdateProfileRequest {
     private String date_of_birth;
     private String gender;
     private String avatar_url;
+    private String address;
 
     public UpdateProfileRequest() {
     }
 
     public UpdateProfileRequest(String full_name, String phone_number, String date_of_birth,
-            String gender, String avatar_url) {
+            String gender, String avatar_url, String address) {
         this.full_name = full_name;
         this.phone_number = phone_number;
         this.date_of_birth = date_of_birth;
         this.gender = gender;
         this.avatar_url = avatar_url;
+        this.address = address;
+    }
+    public UpdateProfileRequest(String full_name, String phone_number, String date_of_birth,
+                                String gender, String avatar_url) {
+        this.full_name = full_name;
+        this.phone_number = phone_number;
+        this.date_of_birth = date_of_birth;
+        this.gender = gender;
+        this.avatar_url = avatar_url;
+        this.address = address;
     }
 
     // Getters and Setters
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
     public String getFull_name() {
         return full_name;
     }

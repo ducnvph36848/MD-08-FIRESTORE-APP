@@ -34,24 +34,25 @@
         android:layout_height="48dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_input_contact"
-        android:hint="SDT"
+        android:hint="Họ và tên"
         android:paddingHorizontal="14dp"
-        android:textColor="#1A1A1A"
+        android:textColor="#000"
         android:textColorHint="#8E96A3"
-        android:inputType="phone"/>
+        android:inputType="textPersonName"/>
 
-    <!-- Email -->
+    <!-- Email (Read-only recommended but okay to edit if BE allows) -->
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/edtEmail"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_input_contact"
-        android:hint="SDT"
+        android:hint="Email"
         android:paddingHorizontal="14dp"
-        android:textColor="#1A1A1A"
+        android:textColor="#000"
         android:textColorHint="#8E96A3"
-        android:inputType="phone"/>
+        android:inputType="textEmailAddress"
+    />
 
     <!-- Số điện thoại -->
     <com.google.android.material.textfield.TextInputEditText
@@ -60,11 +61,12 @@
         android:layout_height="48dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_input_contact"
-        android:hint="Email"
+        android:hint="Số điện thoại"
         android:paddingHorizontal="14dp"
-        android:textColor="#1A1A1A"
+        android:textColor="#000"
+
         android:textColorHint="#8E96A3"
-        android:inputType="textEmailAddress"/>
+        android:inputType="phone"/>
 
     <!-- Địa chỉ -->
     <com.google.android.material.textfield.TextInputEditText
@@ -75,7 +77,8 @@
         android:background="@drawable/bg_input_contact"
         android:hint="Địa chỉ"
         android:paddingHorizontal="14dp"
-        android:textColor="#1A1A1A"
+        android:textColor="#000"
+
         android:textColorHint="#8E96A3"
         android:inputType="textPostalAddress"/>
 
@@ -85,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginTop="20dp"
-        android:text="lưu thông tin"
+        android:text="Lưu thông tin"
         android:textAllCaps="false"
         android:textStyle="bold"
         android:textColor="#FFFFFF"

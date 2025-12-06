@@ -76,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
         menu = findViewById(R.id.menuTrangChuBottom);
         toolbar = findViewById(R.id.toolBarTrangChu);
         tieuDe = findViewById(R.id.tieuDeTextView);
+        
+        findViewById(R.id.iconUser).setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(this, ManThongTinCaNhan.class);
+            startActivity(intent);
+        });
     }
 
     public void taiFragment(Fragment fragment) {

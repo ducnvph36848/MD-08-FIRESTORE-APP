@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.md_08_ungdungfivestore.ManDatHang;
 import com.example.md_08_ungdungfivestore.ManDonHang;
+import com.example.md_08_ungdungfivestore.ManLienHe;
 import com.example.md_08_ungdungfivestore.R;
 
 public class TrangCaNhanFragment extends Fragment {
@@ -67,7 +68,12 @@ public class TrangCaNhanFragment extends Fragment {
                 .makeText(getContext(), "Tính năng Thông tin cá nhân đang phát triển", Toast.LENGTH_SHORT).show());
         // 4. Mở màn liên hệ
         btnLienHe.setOnClickListener(
-                v -> Toast.makeText(getContext(), "Tính năng Liên hệ đang phát triển", Toast.LENGTH_SHORT).show());
+                v -> {
+                    Intent intent = new Intent(this.getContext(), ManLienHe.class);
+                    TrangCaNhanFragment.this.getContext().startActivity(
+                            intent
+                    );
+                });
         // 5. Đăng xuất
         btnDangXuat.setOnClickListener(v -> {
             // Clear token

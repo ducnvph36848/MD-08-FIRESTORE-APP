@@ -2,6 +2,7 @@ package com.example.md_08_ungdungfivestore.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.md_08_ungdungfivestore.R;
 import com.example.md_08_ungdungfivestore.XemChiTiet;
 import com.example.md_08_ungdungfivestore.adapters.ProductAdapter;
+import com.example.md_08_ungdungfivestore.models.ApiResponse;
 import com.example.md_08_ungdungfivestore.models.Product;
+import com.example.md_08_ungdungfivestore.models.WishlistItem;
+import com.example.md_08_ungdungfivestore.services.ApiClient;
 import com.example.md_08_ungdungfivestore.services.ProductApiService;
+import com.example.md_08_ungdungfivestore.services.WishlistApiService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,14 +43,20 @@ public class TrangChuFragment extends Fragment {
     private ProductAdapter adapter;
     private List<Product> productList = new ArrayList<>();
     private ProductApiService apiService;
-
+    private WishlistApiService wishlistApiService;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trangchu, container, false);
+        wishlistApiService = ApiClient.getClient().create(WishlistApiService.class);
 
         timKiemEditText = view.findViewById(R.id.timKiemEditText);
+        timKiemEditText.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), com.example.md_08_ungdungfivestore.TimKiem.class);
+            startActivity(intent);
+        });
+
         rcvProducts = view.findViewById(R.id.rcvProducts);
         rcvProducts.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
@@ -62,7 +75,7 @@ public class TrangChuFragment extends Fragment {
             @Override
             public void onAddClick(Product product) {
                 if (product != null) {
-                    Toast.makeText(requireContext(), "Đã thêm: " + product.getName(), Toast.LENGTH_SHORT).show();
+                    addToWishlistAPI(product.getId());
                 }
             }
 
@@ -81,10 +94,50 @@ public class TrangChuFragment extends Fragment {
 
         return view;
     }
+    private void addToWishlistAPI(String productId) {
+        Log.d("WISHLIST", "=== ADD TO WISHLIST ===");
+        Log.d("WISHLIST", "Product ID: " + productId);
 
+        Map<String, String> body = new HashMap<>();
+        body.put("productId", productId);
+
+        Log.d("WISHLIST", "Request body: " + body.toString());
+
+        wishlistApiService.addToWishlist(body).enqueue(new Callback<ApiResponse<WishlistItem>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<WishlistItem>> call, Response<ApiResponse<WishlistItem>> response) {
+                Log.d("WISHLIST", "Response code: " + response.code());
+
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("WISHLIST", "Success: " + response.body().isSuccess());
+                    Log.d("WISHLIST", "Message: " + response.body().getMessage());
+
+                    if (response.body().isSuccess()) {
+                        Toast.makeText(TrangChuFragment.this.getContext(), "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("WISHLIST", "Server error: " + response.body().getMessage());
+                        Toast.makeText(TrangChuFragment.this.getContext(), "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
+                        Log.e("WISHLIST", "Error response: " + errorBody);
+                    } catch (Exception e) {
+                        Log.e("WISHLIST", "Error reading error body", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<WishlistItem>> call, Throwable t) {
+                Log.e("WISHLIST", "Network error: " + t.getMessage(), t);
+            }
+        });
+    }
     private void setupApiService() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:5001/")
+                .baseUrl(ApiClient.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiService = retrofit.create(ProductApiService.class);

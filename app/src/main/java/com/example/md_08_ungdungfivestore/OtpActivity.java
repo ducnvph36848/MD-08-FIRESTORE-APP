@@ -55,7 +55,17 @@ public class OtpActivity extends AppCompatActivity {
                 Toast.makeText(this, "Nhập mã OTP", Toast.LENGTH_SHORT).show();
                 return;
             }
-            verifyOtp(email, otp, fullName, password);
+            
+            boolean isForgot = getIntent().getBooleanExtra("isForgotPassword", false);
+            if (isForgot) {
+                 Intent intent = new Intent(OtpActivity.this, MatKhauMoi.class);
+                 intent.putExtra("email", email);
+                 intent.putExtra("otp", otp);
+                 startActivity(intent);
+                 finish();
+            } else {
+                verifyOtp(email, otp, fullName, password);
+            }
         });
 
         // ====== XỬ LÝ NÚT GỬI LẠI OTP ======
@@ -79,12 +89,8 @@ public class OtpActivity extends AppCompatActivity {
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(OtpActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-
-                    if (response.body().isSuccess()) {
                         startActivity(new Intent(OtpActivity.this, DangNhap.class));
                         finish();
-                    }
-
                 } else {
                     Toast.makeText(OtpActivity.this, "Xác thực OTP thất bại", Toast.LENGTH_SHORT).show();
                 }
@@ -98,7 +104,29 @@ public class OtpActivity extends AppCompatActivity {
     }
 
     // Hàm gọi API tạo OTP (copy từ màn đăng ký)
+    // Hàm gọi API tạo OTP (copy từ màn đăng ký)
     private void taoOtp(String email, String fullName, String password){
+        if (getIntent().getBooleanExtra("isForgotPassword", false)) {
+            // Resend for Forgot Password
+            com.example.md_08_ungdungfivestore.models.OtpRequest request = new com.example.md_08_ungdungfivestore.models.OtpRequest(email, "", "", "");
+            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+            apiService.forgotPassword(request).enqueue(new Callback<AuthResponse>() {
+                @Override
+                public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                    if (response.isSuccessful()) {
+                         Toast.makeText(OtpActivity.this, "Đã gửi lại OTP", Toast.LENGTH_SHORT).show();
+                    } else {
+                         Toast.makeText(OtpActivity.this, "Gửi lại thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<AuthResponse> call, Throwable t) {
+                    Toast.makeText(OtpActivity.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return;
+        }
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         RegisterRequest request = new RegisterRequest(fullName, email, password);
 

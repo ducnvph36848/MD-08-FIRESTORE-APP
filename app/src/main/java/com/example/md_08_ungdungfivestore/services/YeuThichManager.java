@@ -16,7 +16,7 @@ public class YeuThichManager {
     public static YeuThichService getInstance(Context context) {
         if (service == null) {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2:5001/")
+                    .baseUrl(ApiClient.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             service = retrofit.create(YeuThichService.class);

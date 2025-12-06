@@ -10,7 +10,7 @@ public interface ProductApiService {
 
     // 🔍 Search sản phẩm
     @GET("api/products/search")
-    Call<List<Product>> searchProducts(@Query("q") String keyword);
+    Call<List<Product>> searchProducts(@Query("name") String keyword);
 
     // 📋 Danh sách sản phẩm
     @GET("api/products")

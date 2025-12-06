@@ -45,12 +45,7 @@ public class ManLienHe extends AppCompatActivity {
 
         // NÚT QUAY LẠI -> về ManCaiDat
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(ManLienHe.this, TrangCaNhanFragment.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            // (tuỳ chọn) hiệu ứng chuyển trang nếu có file anim
-            // overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            finish(); // đóng trang Liên hệ
+            finish();
         });
 
         // NÚT GỬI (chưa cần backend)

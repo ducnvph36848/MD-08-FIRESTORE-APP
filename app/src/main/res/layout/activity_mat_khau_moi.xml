@@ -63,7 +63,7 @@
         android:id="@+id/nutXacNhanMatKhauMoiTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Đăng ký"
+        android:text="Xác nhận"
         android:textColor="@color/white"
         android:background="@drawable/nen_nut"
         android:padding="20dp"

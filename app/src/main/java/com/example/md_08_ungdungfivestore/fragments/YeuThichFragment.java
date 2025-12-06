@@ -1,6 +1,7 @@
 package com.example.md_08_ungdungfivestore.fragments;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +75,9 @@ public class YeuThichFragment extends Fragment {
             @Override
             public void onItemClick(Product product) {
                 // Navigate to product detail
-                Toast.makeText(getContext(), "Xem chi tiết: " + product.getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), com.example.md_08_ungdungfivestore.XemChiTiet.class);
+                intent.putExtra("product", product);
+                startActivity(intent);
             }
 
             @Override

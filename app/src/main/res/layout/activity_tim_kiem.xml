@@ -39,13 +39,22 @@
                 android:paddingHorizontal="16dp"
                 android:textColorHint="#AAAAAA"
                 android:textColor="#FFFFFF"
-                android:inputType="text"
-                android:drawableEnd="@drawable/ic_search"
-                android:drawablePadding="8dp" />
+                android:inputType="text" />
+
+            <ImageButton
+                android:id="@+id/btnSearchAction"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_back_button"
+                android:src="@drawable/ic_search"
+                android:padding="8dp"
+                android:contentDescription="Search" />
         </LinearLayout>
 
         <!-- Tiêu đề gợi ý -->
         <TextView
+            android:id="@+id/tvTitleSuggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -56,7 +65,7 @@
 
         <!-- Gợi ý danh mục dùng GridLayout -->
         <GridLayout
-
+            android:id="@+id/gridSuggest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -83,6 +92,7 @@
 
         <!-- Danh sách gợi ý văn bản -->
         <LinearLayout
+            android:id="@+id/layoutTextSuggest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

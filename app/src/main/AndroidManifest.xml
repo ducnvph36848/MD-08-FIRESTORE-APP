@@ -25,6 +25,9 @@
             android:name=".CaiDatActivity"
             android:exported="false" />
         <activity
+            android:name=".MatKhauMoi"
+            android:exported="false" />
+        <activity
             android:name=".TimKiem"
             android:exported="false" />
         <activity

@@ -23,4 +23,12 @@ public interface ApiService {
     // Login trả về AuthResponse
     @POST("api/auth/login")
     Call<AuthResponse> login(@Body LoginRequest request);
+
+    // Gửi OTP khi quên mật khẩu
+    @POST("api/auth/forgot-password")
+    Call<AuthResponse> forgotPassword(@Body OtpRequest request);
+
+    // Đặt lại mật khẩu
+    @POST("api/auth/reset-password")
+    Call<AuthResponse> resetPassword(@Body OtpRequest request);
 }
