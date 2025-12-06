@@ -63,7 +63,7 @@ import retrofit2.Response;
                     return;
                 }
 
-//                // ===== Kiểm tra mật khẩu =====
+                // ===== Kiểm tra mật khẩu =====
 //                if (password.length() < 6) {
 //                    edtPassword.setError("Mật khẩu phải từ 6 ký tự trở lên ");
 //                    edtPassword.requestFocus();

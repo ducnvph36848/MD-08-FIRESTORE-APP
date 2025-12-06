@@ -71,4 +71,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation(libs.gson)
     implementation(libs.converter.gson)
+
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 }

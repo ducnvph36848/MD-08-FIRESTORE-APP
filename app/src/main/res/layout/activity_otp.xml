@@ -5,31 +5,45 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <!-- Toolbar -->
     <LinearLayout
         android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <ImageButton
             android:id="@+id/quayLaiBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/quay_lai_img" />
-
+            android:src="@drawable/quay_lai_img"
+            android:contentDescription="Quay lại" />
     </LinearLayout>
+    <!-- Thông báo  -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Vui lòng kiểm tra tin nhắn đến Email của bạn để nhận mã OTP!"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="22dp"
+        android:layout_marginBottom="16dp" />
+    <!-- Thông báo số điện thoại -->
 
+    <!-- Ô nhập OTP -->
     <EditText
         android:id="@+id/edtOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nhập mã OTP"
         android:inputType="number"
-        android:padding="15dp" />
+        android:textSize="19sp"
+        android:padding="19dp" />
 
     <TextView
         android:id="@+id/btnMa"
