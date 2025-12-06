@@ -24,6 +24,13 @@ import com.example.md_08_ungdungfivestore.models.WishlistItem;
 import com.example.md_08_ungdungfivestore.services.ApiClient;
 import com.example.md_08_ungdungfivestore.services.ProductApiService;
 import com.example.md_08_ungdungfivestore.services.WishlistApiService;
+import com.example.md_08_ungdungfivestore.services.BrandApiService;
+import com.example.md_08_ungdungfivestore.services.CategoryApiService;
+import com.example.md_08_ungdungfivestore.models.Brand;
+import com.example.md_08_ungdungfivestore.models.Category;
+import com.example.md_08_ungdungfivestore.adapters.BrandAdapter;
+import com.example.md_08_ungdungfivestore.adapters.CategoryAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +51,15 @@ public class TrangChuFragment extends Fragment {
     private List<Product> productList = new ArrayList<>();
     private ProductApiService apiService;
     private WishlistApiService wishlistApiService;
+    private BrandApiService brandApiService;
+    private CategoryApiService categoryApiService;
+
+    private RecyclerView rcvBrands;
+    private RecyclerView rcvCategories;
+    private BrandAdapter brandAdapter;
+    private CategoryAdapter categoryAdapter;
+    private List<Brand> brandList = new ArrayList<>();
+    private List<Category> categoryList = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -59,6 +75,24 @@ public class TrangChuFragment extends Fragment {
 
         rcvProducts = view.findViewById(R.id.rcvProducts);
         rcvProducts.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+
+        // Setup Brand RecyclerView
+        rcvBrands = view.findViewById(R.id.rcvBrands);
+        rcvBrands.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        brandAdapter = new BrandAdapter(requireContext(), brandList, brand -> {
+            // Toast removed
+            filterProducts(null, brand.getName());
+        });
+        rcvBrands.setAdapter(brandAdapter);
+
+        // Setup Category RecyclerView
+        rcvCategories = view.findViewById(R.id.rcvCategories);
+        rcvCategories.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        categoryAdapter = new CategoryAdapter(requireContext(), categoryList, category -> {
+             // Toast removed
+             filterProducts(category.getName(), null);
+        });
+        rcvCategories.setAdapter(categoryAdapter);
 
         adapter = new ProductAdapter(requireContext(), productList, new ProductAdapter.OnItemClickListener() {
             @Override
@@ -91,6 +125,8 @@ public class TrangChuFragment extends Fragment {
         rcvProducts.setAdapter(adapter);
         setupApiService();
         fetchProducts();
+        fetchBrands();
+        fetchCategories();
 
         return view;
     }
@@ -141,6 +177,8 @@ public class TrangChuFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiService = retrofit.create(ProductApiService.class);
+        brandApiService = ApiClient.getBrandService();
+        categoryApiService = ApiClient.getCategoryService();
     }
 
     private void fetchProducts() {
@@ -163,6 +201,71 @@ public class TrangChuFragment extends Fragment {
             public void onFailure(Call<List<Product>> call, Throwable t) {
                 if (!isAdded())
                     return;
+                Toast.makeText(requireContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchBrands() {
+        brandApiService.getAllBrands().enqueue(new Callback<List<Brand>>() {
+            @Override
+            public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    brandList.clear();
+                    brandList.addAll(response.body());
+                    brandAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Brand>> call, Throwable t) {
+                if (isAdded()) {
+                    Log.e("HOME", "Failed to fetch brands", t);
+                }
+            }
+        });
+    }
+
+    private void fetchCategories() {
+        categoryApiService.getAllCategories().enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    categoryList.clear();
+                    categoryList.addAll(response.body());
+                    categoryAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Category>> call, Throwable t) {
+                if (isAdded()) {
+                    Log.e("HOME", "Failed to fetch categories", t);
+                }
+            }
+        });
+    }
+
+    private void filterProducts(String category, String brand) {
+        Call<List<Product>> call = apiService.getFilteredProducts(category, brand);
+        call.enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if (!isAdded()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    productList.clear();
+                    productList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(requireContext(), "Không tìm thấy sản phẩm nào", Toast.LENGTH_SHORT).show();
+                    productList.clear();
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(requireContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

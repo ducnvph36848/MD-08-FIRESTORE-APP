@@ -10,25 +10,80 @@
 
 
 
-    <EditText
-        android:id="@+id/timKiemEditText"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:clickable="true"
-        android:focusable="false"
-        android:hint="Tìm quần áo của bạn..."
-        android:padding="16dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/bg_search"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#777777"
-        android:drawableStart="@drawable/ic_search" />
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvProducts"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:padding="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="80dp">
+
+            <EditText
+                android:id="@+id/timKiemEditText"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="Tìm quần áo của bạn..."
+                android:padding="16dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/bg_search"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#777777"
+                android:drawableStart="@drawable/ic_search" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hãng sản phẩm"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvBrands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:clipToPadding="false"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Danh mục sản phẩm"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvCategories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:clipToPadding="false"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvProducts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:padding="16dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

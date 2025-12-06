@@ -12,9 +12,12 @@ public interface ProductApiService {
     @GET("api/products/search")
     Call<List<Product>> searchProducts(@Query("name") String keyword);
 
-    // 📋 Danh sách sản phẩm
+    // 📋 Danh sách sản phẩm (có thể lọc)
     @GET("api/products")
     Call<List<Product>> getAllProducts();
+
+    @GET("api/products")
+    Call<List<Product>> getFilteredProducts(@Query("category") String category, @Query("brand") String brand);
 
     // 🆕 Sản phẩm mới nhất
     @GET("api/products/newest")

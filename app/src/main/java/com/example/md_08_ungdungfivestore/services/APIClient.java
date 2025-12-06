@@ -76,4 +76,12 @@ public class ApiClient {
     public static ProductApiService getProductService() {
         return getClient().create(ProductApiService.class);
     }
+
+    public static BrandApiService getBrandService() {
+        return getClient().create(BrandApiService.class);
+    }
+
+    public static CategoryApiService getCategoryService() {
+        return getClient().create(CategoryApiService.class);
+    }
 }
