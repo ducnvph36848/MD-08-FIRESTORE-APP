@@ -31,22 +31,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Vui lòng kiểm tra tin nhắn đến Email của bạn để nhận mã OTP!"
-        android:textColor="#000000"
+        android:textColor="#FFFF"
         android:textStyle="bold"
         android:textSize="22dp"
         android:layout_marginBottom="16dp" />
     <!-- Thông báo số điện thoại -->
 
     <!-- Ô nhập OTP -->
+
     <EditText
         android:id="@+id/edtOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFF"
         android:hint="Nhập mã OTP"
-        android:textColor="@android:color/white"
         android:inputType="number"
-        android:textSize="19sp"
-        android:padding="19dp" />
+        android:padding="19dp"
+        android:textColor="@android:color/background_dark"
+        android:textSize="19sp" />
 
     <TextView
         android:id="@+id/btnMa"
