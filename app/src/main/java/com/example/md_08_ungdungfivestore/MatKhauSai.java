@@ -26,13 +26,13 @@ public class MatKhauSai extends AppCompatActivity {
 
         initUI();
 
-        // ✅ Nút quay lại
+        //  Nút quay lại
         BtnQuayLaiSMK.setOnClickListener(v -> finish());
 
-        // ✅ Toggle show/hide password
+        //  Toggle show/hide password
         imgShowHidePassword.setOnClickListener(v -> togglePassword());
 
-        // ✅ Nhấn Sign In → quay về màn đăng nhập
+        //  Nhấn Sign In → quay về màn đăng nhập
         nutDangNhapSaiMKTextView.setOnClickListener(v -> {
             Intent i = new Intent(MatKhauSai.this, DangNhap.class);
             startActivity(i);
