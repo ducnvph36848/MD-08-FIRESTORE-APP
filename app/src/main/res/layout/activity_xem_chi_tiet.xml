@@ -34,7 +34,6 @@
                     android:layout_margin="16dp"
                     android:layout_gravity="start|top"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:tint="#D17842"
                     android:src="@drawable/back_icon"
                     android:contentDescription="Quay lại" />
 

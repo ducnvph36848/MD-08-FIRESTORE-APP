@@ -73,21 +73,17 @@
             android:alignmentMode="alignMargins"
             android:useDefaultMargins="true">
 
-            <Button
-                style="@style/SearchCategoryButton"
-                android:text="Áo trẻ em" />
-
-            <Button
-                style="@style/SearchCategoryButton"
-                android:text="Áo phụ nữ" />
 
             <Button
                 style="@style/SearchCategoryButton"
                 android:text="Áo nam" />
 
+
             <Button
                 style="@style/SearchCategoryButton"
-                android:text="Áo trẻ em 1 tuổi" />
+                android:text="Áo nữ" />
+
+
         </GridLayout>
 
         <!-- Danh sách gợi ý văn bản -->
@@ -97,13 +93,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Áo trẻ em"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"

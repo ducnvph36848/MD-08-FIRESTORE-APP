@@ -10,13 +10,14 @@
     <!-- Nút quay lại -->
     <ImageButton
         android:id="@+id/quayLaiBtn"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
         android:contentDescription="@string/app_name"
-        app:srcCompat="@drawable/quay_lai_img" />
+        app:srcCompat="@drawable/back_icon" />
 
     <!-- Avatar -->
     <ImageView

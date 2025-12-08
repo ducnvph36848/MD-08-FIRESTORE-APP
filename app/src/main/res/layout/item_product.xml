@@ -73,12 +73,13 @@
             android:textSize="15sp"
             android:textStyle="bold" />
 
+
         <ImageButton
             android:id="@+id/btnAdd"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/heart_empty"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Thêm vào giỏ hàng"/>
+            android:contentDescription="Thêm sảm phẩm yêu thích "/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
