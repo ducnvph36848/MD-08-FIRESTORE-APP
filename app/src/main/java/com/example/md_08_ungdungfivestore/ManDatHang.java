@@ -114,22 +114,45 @@ public class ManDatHang extends AppCompatActivity {
         String phone = soDienThoaiTxt.getText().toString().trim();
         String addressStr = diaChiTxt.getText().toString().trim();
 
-        // Validate
+        // Validate họ tên
         if (name.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập họ tên", Toast.LENGTH_SHORT).show();
+            hoTenKhachHangTxt.setError("Vui lòng nhập họ tên");
+            hoTenKhachHangTxt.requestFocus();
+            return;
+        }
+        if (name.matches(".*\\d.*")) {
+            hoTenKhachHangTxt.setError("Họ tên không được chứa số");
             hoTenKhachHangTxt.requestFocus();
             return;
         }
 
+        // Validate số điện thoại
         if (phone.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
+            soDienThoaiTxt.setError("Vui lòng nhập số điện thoại");
+            soDienThoaiTxt.requestFocus();
+            return;
+        }
+        if (!phone.matches("^(0|\\+84)[0-9]{9,10}$")) {
+            soDienThoaiTxt.setError("Số điện thoại không hợp lệ");
             soDienThoaiTxt.requestFocus();
             return;
         }
 
+        // Validate địa chỉ
         if (addressStr.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập địa chỉ", Toast.LENGTH_SHORT).show();
+            diaChiTxt.setError("Vui lòng nhập địa chỉ");
             diaChiTxt.requestFocus();
+            return;
+        }
+        if (addressStr.length() < 5) {
+            diaChiTxt.setError("Địa chỉ quá ngắn !");
+            diaChiTxt.requestFocus();
+            return;
+        }
+
+        // Validate phương thức thanh toán
+        if (!thanhToanRadioBtn.isChecked()) {
+            Toast.makeText(this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -190,4 +213,5 @@ public class ManDatHang extends AppCompatActivity {
             }
         });
     }
+
 }

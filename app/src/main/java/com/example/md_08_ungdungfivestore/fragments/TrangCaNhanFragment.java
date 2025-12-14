@@ -76,19 +76,34 @@ public class TrangCaNhanFragment extends Fragment {
                 });
         // 5. Đăng xuất
         btnDangXuat.setOnClickListener(v -> {
-            // Clear token
-            com.example.md_08_ungdungfivestore.utils.TokenManager tokenManager = new com.example.md_08_ungdungfivestore.utils.TokenManager(
-                    getContext());
-            tokenManager.clearToken();
+            new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                    .setTitle("Xác nhận")
+                    .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                    .setPositiveButton("Đăng xuất", (dialog, which) -> {
+                        // Clear token
+                        com.example.md_08_ungdungfivestore.utils.TokenManager tokenManager =
+                                new com.example.md_08_ungdungfivestore.utils.TokenManager(getContext());
+                        tokenManager.clearToken();
 
-            // Navigate to Login
-            android.content.Intent intent = new android.content.Intent(getContext(),
-                    com.example.md_08_ungdungfivestore.DangNhap.class);
-            intent.setFlags(
-                    android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+                        // Clear SharedPreferences (nếu có)
+                        android.content.SharedPreferences prefs = getContext().getSharedPreferences("UserPrefs", android.content.Context.MODE_PRIVATE);
+                        android.content.SharedPreferences.Editor editor = prefs.edit();
+                        editor.clear();
+                        editor.apply();
 
-            Toast.makeText(getContext(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                        // Navigate to Login
+                        android.content.Intent intent = new android.content.Intent(getContext(),
+                                com.example.md_08_ungdungfivestore.DangNhap.class);
+                        intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+
+                        Toast.makeText(getContext(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Hủy", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
         });
+
     }
 }

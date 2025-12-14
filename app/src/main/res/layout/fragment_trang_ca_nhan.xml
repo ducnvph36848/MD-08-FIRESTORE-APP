@@ -121,7 +121,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/poppins_medium"
-                android:text="Thông tin cá nhân"
+                android:text="Đổi mật khẩu"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
