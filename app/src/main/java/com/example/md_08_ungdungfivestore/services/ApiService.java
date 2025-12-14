@@ -5,6 +5,8 @@ import com.example.md_08_ungdungfivestore.models.RegisterRequest;
 import com.example.md_08_ungdungfivestore.models.RegisterResponse;
 import com.example.md_08_ungdungfivestore.models.OtpRequest;
 import com.example.md_08_ungdungfivestore.models.LoginRequest;
+import com.example.md_08_ungdungfivestore.models.VNPayRequest;
+import com.example.md_08_ungdungfivestore.models.VNPayResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -31,4 +33,12 @@ public interface ApiService {
     // Đặt lại mật khẩu
     @POST("api/auth/reset-password")
     Call<AuthResponse> resetPassword(@Body OtpRequest request);
+
+    //
+
+
+    @POST("api/vnpay/create-payment")
+        Call<VNPayResponse> createVNPay(@Body VNPayRequest body);
+
+
 }
