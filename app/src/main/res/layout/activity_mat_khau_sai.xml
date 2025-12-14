@@ -15,12 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/BtnQuayLaiSMK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/quay_lai_img"
-            android:layout_marginLeft="-175dp"/>
+
 
         <!-- Logo -->
         <ImageView
@@ -34,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome to PROSOTE !!"
+            android:text="Chào mừng đến với PROSOTE"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="18sp"
@@ -43,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login to Continue"
+            android:text="Đăng nhập để tiếp tục !"
             android:textColor="#A8A8A8"
             android:textSize="14sp"
             android:layout_marginBottom="16dp" />
@@ -73,9 +68,11 @@
                 android:id="@+id/matKhauDangNhapSaiMKTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="0dp"
+                android:padding="12dp"
                 android:hint="PassWord"
+                android:textColor="#FFFFFF"
                 android:textColorHint="#999999"
+                android:textSize="15sp"
                 android:inputType="textPassword"
                 android:background="@drawable/bg_login"/>
 
@@ -113,7 +110,7 @@
             android:textAlignment="center"
             android:fontFamily="@font/poppins_semibold"
             android:textSize="14dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="0dp"
             app:layout_constraintTop_toBottomOf="@+id/nhapLaiMatKhauTextInputLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
