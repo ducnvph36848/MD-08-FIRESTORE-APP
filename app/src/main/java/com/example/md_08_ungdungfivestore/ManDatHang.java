@@ -1,5 +1,7 @@
 package com.example.md_08_ungdungfivestore;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -27,24 +29,30 @@ import com.example.md_08_ungdungfivestore.services.OrderApiService;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ManDatHang extends AppCompatActivity {
+
+    // UI
     private EditText diaChiTxt, hoTenKhachHangTxt, soDienThoaiTxt;
     private TextView tongSoTienTxt, nutThanhToanTxt;
     private ImageButton quayLaiBtn;
-    private RadioButton thanhToanRadioBtn;
+    private RadioButton thanhToanRadioBtn, thanhToanTruocRadioBtn;
     private RecyclerView danhSachMuaRecyclerView;
 
+    // Data
     private ArrayList<CartItem> selectedItems;
     private OrderApiService orderApiService;
+
     private double subtotal = 0;
-    private double shippingFee = 30000;
+    private final double shippingFee = 30000;
     private double total = 0;
 
     @Override
@@ -52,6 +60,7 @@ public class ManDatHang extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_man_dat_hang);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -60,30 +69,31 @@ public class ManDatHang extends AppCompatActivity {
 
         anhXa();
 
-        // Initialize API
         orderApiService = ApiClient.getClient().create(OrderApiService.class);
 
-        // Get selected items from intent
         selectedItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("selectedItems");
-
         if (selectedItems == null || selectedItems.isEmpty()) {
             Toast.makeText(this, "Không có sản phẩm nào", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Setup RecyclerView
         danhSachMuaRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         GioHangAdapter adapter = new GioHangAdapter(this, selectedItems, null);
         adapter.setCheckoutMode(true);
         danhSachMuaRecyclerView.setAdapter(adapter);
 
-        // Calculate totals
         calculateTotals();
 
         quayLaiBtn.setOnClickListener(v -> finish());
 
-        nutThanhToanTxt.setOnClickListener(v -> placeOrder());
+        nutThanhToanTxt.setOnClickListener(v -> {
+            if (thanhToanTruocRadioBtn.isChecked()) {
+                thanhToanVnPay();
+            } else {
+                placeOrder(); // COD
+            }
+        });
     }
 
     private void anhXa() {
@@ -94,6 +104,7 @@ public class ManDatHang extends AppCompatActivity {
         nutThanhToanTxt = findViewById(R.id.nutThanhToanTxt);
         quayLaiBtn = findViewById(R.id.quayLaiBtn);
         thanhToanRadioBtn = findViewById(R.id.thanhToanRadioBtn);
+        thanhToanTruocRadioBtn = findViewById(R.id.thanhToanTruocRadioBtn);
         danhSachMuaRecyclerView = findViewById(R.id.danhSachMuaRecyclerView);
     }
 
@@ -108,86 +119,38 @@ public class ManDatHang extends AppCompatActivity {
         tongSoTienTxt.setText(formatter.format(total) + " VND");
     }
 
+    // ===================== COD =====================
     private void placeOrder() {
-        // Collect shipping info
-        String name = hoTenKhachHangTxt.getText().toString().trim();
-        String phone = soDienThoaiTxt.getText().toString().trim();
-        String addressStr = diaChiTxt.getText().toString().trim();
+        if (!validateThongTinNguoiNhan()) return;
 
-        // Validate họ tên
-        if (name.isEmpty()) {
-            hoTenKhachHangTxt.setError("Vui lòng nhập họ tên");
-            hoTenKhachHangTxt.requestFocus();
-            return;
-        }
-        if (name.matches(".*\\d.*")) {
-            hoTenKhachHangTxt.setError("Họ tên không được chứa số");
-            hoTenKhachHangTxt.requestFocus();
-            return;
-        }
-
-        // Validate số điện thoại
-        if (phone.isEmpty()) {
-            soDienThoaiTxt.setError("Vui lòng nhập số điện thoại");
-            soDienThoaiTxt.requestFocus();
-            return;
-        }
-        if (!phone.matches("^(0|\\+84)[0-9]{9,10}$")) {
-            soDienThoaiTxt.setError("Số điện thoại không hợp lệ");
-            soDienThoaiTxt.requestFocus();
-            return;
-        }
-
-        // Validate địa chỉ
-        if (addressStr.isEmpty()) {
-            diaChiTxt.setError("Vui lòng nhập địa chỉ");
-            diaChiTxt.requestFocus();
-            return;
-        }
-        if (addressStr.length() < 5) {
-            diaChiTxt.setError("Địa chỉ quá ngắn !");
-            diaChiTxt.requestFocus();
-            return;
-        }
-
-        // Validate phương thức thanh toán
-        if (!thanhToanRadioBtn.isChecked()) {
-            Toast.makeText(this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Convert CartItem to OrderItemRequest
         List<CreateOrderRequest.OrderItemRequest> orderItems = new ArrayList<>();
         for (CartItem cartItem : selectedItems) {
-            CreateOrderRequest.OrderItemRequest orderItem = new CreateOrderRequest.OrderItemRequest(
+            orderItems.add(new CreateOrderRequest.OrderItemRequest(
                     cartItem.getProduct_id(),
                     cartItem.getName(),
                     cartItem.getImage(),
                     cartItem.getSize(),
                     cartItem.getColor(),
                     cartItem.getQuantity(),
-                    cartItem.getPrice());
-            orderItems.add(orderItem);
+                    cartItem.getPrice()
+            ));
         }
 
-        // Create address
         Address address = new Address();
-        address.setFull_name(name);
-        address.setPhone_number(phone);
-        address.setStreet(addressStr);
+        address.setFull_name(hoTenKhachHangTxt.getText().toString().trim());
+        address.setPhone_number(soDienThoaiTxt.getText().toString().trim());
+        address.setStreet(diaChiTxt.getText().toString().trim());
 
-        // Create order request
         CreateOrderRequest request = new CreateOrderRequest(
                 orderItems,
                 address,
                 shippingFee,
-                total);
+                total
+        );
 
-        // Disable button to prevent double click
         nutThanhToanTxt.setEnabled(false);
         nutThanhToanTxt.setText("Đang xử lý...");
 
-        // Call API
         orderApiService.createCashOrder(request).enqueue(new Callback<ApiResponse<Order>>() {
             @Override
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
@@ -195,12 +158,10 @@ public class ManDatHang extends AppCompatActivity {
                 nutThanhToanTxt.setText("Thanh toán");
 
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    Toast.makeText(ManDatHang.this,
-                            "Đặt hàng thành công!",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(ManDatHang.this, "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Toast.makeText(ManDatHang.this, "Lỗi đặt hàng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManDatHang.this, "Đặt hàng thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -208,10 +169,65 @@ public class ManDatHang extends AppCompatActivity {
             public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
                 nutThanhToanTxt.setEnabled(true);
                 nutThanhToanTxt.setText("Thanh toán");
-                Log.d("THANH", t.getMessage());
                 Toast.makeText(ManDatHang.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    // ===================== VNPAY =====================
+    private void thanhToanVnPay() {
+        if (!validateThongTinNguoiNhan()) return;
+
+        nutThanhToanTxt.setEnabled(false);
+        nutThanhToanTxt.setText("Đang chuyển VNPAY...");
+
+        Map<String, Integer> body = new HashMap<>();
+        body.put("amount", (int) total);
+
+        orderApiService.createVnPayPayment(body).enqueue(new Callback<ApiResponse<String>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<String>> call, Response<ApiResponse<String>> response) {
+                nutThanhToanTxt.setEnabled(true);
+                nutThanhToanTxt.setText("Thanh toán");
+
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    String paymentUrl = response.body().getData();
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl)));
+                } else {
+                    Toast.makeText(ManDatHang.this, "Không tạo được thanh toán VNPAY", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<String>> call, Throwable t) {
+                nutThanhToanTxt.setEnabled(true);
+                nutThanhToanTxt.setText("Thanh toán");
+                Log.e("VNPAY", t.getMessage());
+                Toast.makeText(ManDatHang.this, "Lỗi kết nối VNPAY", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // ===================== VALIDATE =====================
+    private boolean validateThongTinNguoiNhan() {
+        String name = hoTenKhachHangTxt.getText().toString().trim();
+        String phone = soDienThoaiTxt.getText().toString().trim();
+        String address = diaChiTxt.getText().toString().trim();
+
+        if (name.isEmpty() || name.matches(".*\\d.*")) {
+            hoTenKhachHangTxt.setError("Họ tên không hợp lệ");
+            return false;
+        }
+
+        if (!phone.matches("^(0|\\+84)[0-9]{9,10}$")) {
+            soDienThoaiTxt.setError("Số điện thoại không hợp lệ");
+            return false;
+        }
+
+        if (address.length() < 5) {
+            diaChiTxt.setError("Địa chỉ quá ngắn");
+            return false;
+        }
+        return true;
+    }
 }

@@ -5,6 +5,7 @@ import com.example.md_08_ungdungfivestore.models.CreateOrderRequest;
 import com.example.md_08_ungdungfivestore.models.Order;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -28,8 +29,9 @@ public interface OrderApiService {
     /**
      * Đặt hàng thanh toán VNPay
      */
-    @POST("api/orders/vnpay-order")
-    Call<ApiResponse<Order>> createVNPayOrder(@Body CreateOrderRequest request);
+    @POST("api/vnpay/create-payment")
+    Call<ApiResponse<String>> createVnPayPayment(@Body Map<String, Integer> body);
+
 
     /**
      * Lấy danh sách đơn hàng của user (tất cả trạng thái)
