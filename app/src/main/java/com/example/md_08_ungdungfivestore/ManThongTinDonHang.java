@@ -143,7 +143,7 @@ public class ManThongTinDonHang extends AppCompatActivity {
                 tenSanPhamTextView.setText(firstItem.getProduct_id().getName() + " (x" + firstItem.getQuantity() + ")");
                 String imageUrl = firstItem.getProduct_id().getImage();
                 if (imageUrl != null && !imageUrl.startsWith("http")) {
-                    imageUrl = "http://10.0.2.2:5001" + imageUrl;
+                    imageUrl = ApiClient.BASE_URL2 + imageUrl;
                 }
                 Glide.with(this).load(imageUrl).into(anhDonHangImageView);
             } else {

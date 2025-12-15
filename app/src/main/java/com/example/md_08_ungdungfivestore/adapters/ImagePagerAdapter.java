@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.md_08_ungdungfivestore.R;
+import com.example.md_08_ungdungfivestore.services.ApiClient;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
         String url = imageUrls.get(position);
         if (!url.startsWith("http")) {
             if (!url.startsWith("/")) url = "/" + url;
-            url = "http://10.0.2.2:5001" + url;
+            url = ApiClient.BASE_URL2 + url;
         }
 
         Glide.with(context)

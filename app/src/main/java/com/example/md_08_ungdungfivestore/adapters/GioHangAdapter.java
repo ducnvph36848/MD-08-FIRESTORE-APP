@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.md_08_ungdungfivestore.R;
 import com.example.md_08_ungdungfivestore.models.CartItem;
+import com.example.md_08_ungdungfivestore.services.ApiClient;
 
 import java.text.NumberFormat;
 import java.util.HashSet;
@@ -91,7 +92,7 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.CartView
             if (!imageUrl.startsWith("http")) {
                 if (!imageUrl.startsWith("/"))
                     imageUrl = "/" + imageUrl;
-                imageUrl = "http://10.0.2.2:5001" + imageUrl;
+                imageUrl = ApiClient.BASE_URL2+ imageUrl;
             }
             Glide.with(context)
                     .load(imageUrl)

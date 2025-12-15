@@ -65,7 +65,7 @@ public class ManDanhGia extends AppCompatActivity {
         // Setup UI
         tvProductName.setText(productName);
         if (productImage != null && !productImage.startsWith("http")) {
-            productImage = "http://10.0.2.2:5001" + productImage;
+            productImage = ApiClient.BASE_URL2 + productImage;
         }
         Glide.with(this).load(productImage).into(imgProduct);
 

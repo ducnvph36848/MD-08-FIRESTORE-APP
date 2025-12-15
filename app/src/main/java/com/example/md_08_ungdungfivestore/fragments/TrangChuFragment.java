@@ -33,9 +33,11 @@ import com.example.md_08_ungdungfivestore.adapters.CategoryAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,6 +62,7 @@ public class TrangChuFragment extends Fragment {
     private CategoryAdapter categoryAdapter;
     private List<Brand> brandList = new ArrayList<>();
     private List<Category> categoryList = new ArrayList<>();
+    private Set<String> wishlistProductIds = new HashSet<>(); // Track wishlist product IDs
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -124,11 +127,52 @@ public class TrangChuFragment extends Fragment {
 
         rcvProducts.setAdapter(adapter);
         setupApiService();
+        fetchWishlist(); // Fetch wishlist first
         fetchProducts();
         fetchBrands();
         fetchCategories();
 
         return view;
+    }
+    
+    private void fetchWishlist() {
+        // Only fetch wishlist if service is initialized
+        if (wishlistApiService == null) {
+            Log.w("WISHLIST", "WishlistApiService not initialized");
+            return;
+        }
+        
+        wishlistApiService.getWishlists().enqueue(new Callback<ApiResponse<List<WishlistItem>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<WishlistItem>>> call, Response<ApiResponse<List<WishlistItem>>> response) {
+                if (!isAdded()) return; // Fragment not attached
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<WishlistItem> items = response.body().getData();
+                    wishlistProductIds.clear();
+                    if (items != null) {
+                        for (WishlistItem item : items) {
+                            // Use getProduct_id() which returns String
+                            if (item.getProduct_id() != null) {
+                                wishlistProductIds.add(item.getProduct_id());
+                            }
+                        }
+                    }
+                    // Update adapter with wishlist IDs
+                    if (adapter != null) {
+                        adapter.setWishlistIds(wishlistProductIds);
+                    }
+                    Log.d("WISHLIST", "Loaded " + wishlistProductIds.size() + " wishlist items");
+                } else {
+                    Log.w("WISHLIST", "Wishlist response not successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<WishlistItem>>> call, Throwable t) {
+                if (!isAdded()) return;
+                Log.e("WISHLIST", "Failed to fetch wishlist", t);
+            }
+        });
     }
     private void addToWishlistAPI(String productId) {
         Log.d("WISHLIST", "=== ADD TO WISHLIST ===");
@@ -150,6 +194,8 @@ public class TrangChuFragment extends Fragment {
 
                     if (response.body().isSuccess()) {
                         Toast.makeText(TrangChuFragment.this.getContext(), "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                        // Refresh wishlist to update UI
+                        fetchWishlist();
                     } else {
                         Log.e("WISHLIST", "Server error: " + response.body().getMessage());
                         Toast.makeText(TrangChuFragment.this.getContext(), "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT)

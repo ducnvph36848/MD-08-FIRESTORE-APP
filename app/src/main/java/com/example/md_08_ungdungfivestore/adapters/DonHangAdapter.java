@@ -17,6 +17,7 @@ import com.example.md_08_ungdungfivestore.ManDanhGia;
 import com.example.md_08_ungdungfivestore.ManThongTinDonHang;
 import com.example.md_08_ungdungfivestore.R;
 import com.example.md_08_ungdungfivestore.models.Order;
+import com.example.md_08_ungdungfivestore.services.ApiClient;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -95,7 +96,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.OrderVie
 
                 String imageUrl = firstItem.getProduct_id().getImage();
                 if (imageUrl != null && !imageUrl.startsWith("http")) {
-                    imageUrl = "http://10.0.2.2:5001" + imageUrl;
+                    imageUrl = ApiClient.BASE_URL2 + imageUrl;
                 }
                 Glide.with(context).load(imageUrl).into(holder.imgProduct);
             } else {
@@ -103,7 +104,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.OrderVie
                 if (firstItem.getImage() != null) {
                     String imageUrl = firstItem.getImage();
                     if (!imageUrl.startsWith("http")) {
-                        imageUrl = "http://10.0.2.2:5001" + imageUrl;
+                        imageUrl =ApiClient.BASE_URL2 + imageUrl;
                     }
                     Glide.with(context).load(imageUrl).into(holder.imgProduct);
                 }

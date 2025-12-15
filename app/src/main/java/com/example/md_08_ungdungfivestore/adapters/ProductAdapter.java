@@ -14,8 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.md_08_ungdungfivestore.R;
 import com.example.md_08_ungdungfivestore.models.Product;
+import com.example.md_08_ungdungfivestore.services.ApiClient;
 
-import java.util.List;
+ import java.util.HashSet;
+ import java.util.List;
+ import java.util.Set;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -23,6 +26,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private List<Product> productList;
     private OnItemClickListener listener;
     private boolean showDeleteButton = true; // Default to true for wishlist
+    private Set<String> wishlistIds = new HashSet<>(); // Track wishlist product IDs
 
     public ProductAdapter(Context context, List<Product> productList, OnItemClickListener listener) {
         this.context = context;
@@ -40,6 +44,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public void setShowDeleteButton(boolean show) {
         this.showDeleteButton = show;
+        notifyDataSetChanged();
+    }
+
+    // Update wishlist IDs
+    public void setWishlistIds(Set<String> wishlistIds) {
+        this.wishlistIds = wishlistIds != null ? wishlistIds : new HashSet<>();
         notifyDataSetChanged();
     }
 
@@ -62,7 +72,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             if (!imageUrl.startsWith("http")) {
                 if (!imageUrl.startsWith("/"))
                     imageUrl = "/" + imageUrl;
-                imageUrl = "http://10.0.2.2:5001" + imageUrl;
+                imageUrl = ApiClient.BASE_URL2 + imageUrl;
             }
             Glide.with(context).load(imageUrl).error(R.drawable.ic_kids1).into(holder.imgProduct);
         } else {
@@ -81,7 +91,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 listener.onItemClick(p);
         });
 
-        // Click nút thêm vào giỏ hàng
+        // Click nút thêm vào yêu thích (heart icon)
+        boolean isInWishlist = wishlistIds.contains(p.getId());
+        if (isInWishlist) {
+            // Tô vàng nếu đã có trong wishlist
+            holder.btnAdd.setColorFilter(context.getResources().getColor(android.R.color.holo_orange_light));
+        } else {
+            // Màu mặc định (xám hoặc trắng)
+            holder.btnAdd.setColorFilter(context.getResources().getColor(android.R.color.darker_gray));
+        }
+        
         holder.btnAdd.setOnClickListener(v -> {
             if (listener != null)
                 listener.onAddClick(p);

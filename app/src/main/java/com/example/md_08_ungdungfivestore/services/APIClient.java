@@ -14,7 +14,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.1.120:5001/";
+
+ //   public static final String BASE_URL = "http://10.0.2.2:5001/";
+    public static final String BASE_URL = "http://192.168.1.65:5001/";
+
+    public static final String BASE_URL2 = "http://192.168.1.65:5001";
+
+    
     private static Retrofit retrofit;
     private static Context appContext;
 
