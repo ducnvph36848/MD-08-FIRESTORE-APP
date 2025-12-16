@@ -24,8 +24,10 @@ import com.example.md_08_ungdungfivestore.models.ApiResponse;
 import com.example.md_08_ungdungfivestore.models.CartItem;
 import com.example.md_08_ungdungfivestore.models.CreateOrderRequest;
 import com.example.md_08_ungdungfivestore.models.Order;
+import com.example.md_08_ungdungfivestore.models.UserProfile;
 import com.example.md_08_ungdungfivestore.services.ApiClient;
 import com.example.md_08_ungdungfivestore.services.OrderApiService;
+import com.example.md_08_ungdungfivestore.services.UserApiService;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class ManDatHang extends AppCompatActivity {
     // Data
     private ArrayList<CartItem> selectedItems;
     private OrderApiService orderApiService;
+    private UserApiService userApiService;
 
     private double subtotal = 0;
     private final double shippingFee = 30000;
@@ -70,6 +73,10 @@ public class ManDatHang extends AppCompatActivity {
         anhXa();
 
         orderApiService = ApiClient.getClient().create(OrderApiService.class);
+        userApiService = ApiClient.getClient().create(UserApiService.class);
+
+        // Load user profile to auto-fill
+        loadUserProfile();
 
         selectedItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("selectedItems");
         if (selectedItems == null || selectedItems.isEmpty()) {
@@ -118,6 +125,35 @@ public class ManDatHang extends AppCompatActivity {
         NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
         tongSoTienTxt.setText(formatter.format(total) + " VND");
     }
+    
+    private void loadUserProfile() {
+        userApiService.getCurrentUser().enqueue(new Callback<ApiResponse<UserProfile>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<UserProfile>> call, Response<ApiResponse<UserProfile>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    UserProfile user = response.body().getData();
+                    if (user != null) {
+                        // Tự động điền thông tin nếu có
+                        if (user.getFull_name() != null && !user.getFull_name().isEmpty()) {
+                            hoTenKhachHangTxt.setText(user.getFull_name());
+                        }
+                        if (user.getPhone_number() != null && !user.getPhone_number().isEmpty()) {
+                            soDienThoaiTxt.setText(user.getPhone_number());
+                        }
+                        if (user.getAddress() != null && !user.getAddress().isEmpty()) {
+                            diaChiTxt.setText(user.getAddress());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<UserProfile>> call, Throwable t) {
+                // Không hiển thị lỗi, chỉ log
+                Log.e("ManDatHang", "Failed to load user profile: " + t.getMessage());
+            }
+        });
+    }
 
     // ===================== COD =====================
     private void placeOrder() {
@@ -159,6 +195,8 @@ public class ManDatHang extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     Toast.makeText(ManDatHang.this, "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                    // Thông báo đặt hàng thành công để refresh danh sách sản phẩm
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     Toast.makeText(ManDatHang.this, "Đặt hàng thất bại", Toast.LENGTH_SHORT).show();

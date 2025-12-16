@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.example.md_08_ungdungfivestore.R;
 import com.example.md_08_ungdungfivestore.models.Product;
+import com.example.md_08_ungdungfivestore.services.ApiClient;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.File;
@@ -102,24 +103,16 @@ public class SelectOptionsBottomSheetFragment extends BottomSheetDialogFragment 
             ivProductImage.setImageResource(R.drawable.ic_launcher_background);
             return;
         }
+        String prdImage = "";
 
-        if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+        if (!imagePath.startsWith("http")) {
+            prdImage = ApiClient.BASE_URL2+ imagePath;
+        }
             Glide.with(this)
-                    .load(imagePath)
+                    .load(prdImage)
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(ivProductImage);
-        } else {
-            // thử tìm drawable theo tên
-            int resId = getResources().getIdentifier(imagePath.replace(".jpg", "").replace(".png", ""), "drawable",
-                    getContext().getPackageName());
-            if (resId != 0) {
-                ivProductImage.setImageResource(resId);
-            } else {
-                // fallback
-                ivProductImage.setImageResource(R.drawable.ic_launcher_background);
-            }
-        }
     }
 
     private void setupColors() {

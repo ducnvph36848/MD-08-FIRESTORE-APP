@@ -22,6 +22,7 @@ import com.example.md_08_ungdungfivestore.models.Product;
 import com.example.md_08_ungdungfivestore.models.WishlistItem;
 import com.example.md_08_ungdungfivestore.services.ApiClient;
 import com.example.md_08_ungdungfivestore.services.CartApiService;
+import com.example.md_08_ungdungfivestore.services.ProductApiService;
 import com.example.md_08_ungdungfivestore.services.WishlistApiService;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class XemChiTiet extends AppCompatActivity {
     private boolean isFavorite = false;
     private WishlistApiService wishlistApiService;
     private CartApiService cartApiService;
+    private ProductApiService productApiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,7 @@ public class XemChiTiet extends AppCompatActivity {
         // Khởi tạo API services
         wishlistApiService = ApiClient.getClient().create(WishlistApiService.class);
         cartApiService = ApiClient.getClient().create(CartApiService.class);
+        productApiService = ApiClient.getClient().create(ProductApiService.class);
 
         // ✅ LOG: Check product ID
         Log.d("XemChiTiet", "Product ID: " + (product != null ? product.getId() : "NULL"));
@@ -284,6 +287,45 @@ public class XemChiTiet extends AppCompatActivity {
             public void onFailure(Call<ApiResponse<Cart>> call, Throwable t) {
                 Log.d("CART", t.getMessage());
                 Toast.makeText(XemChiTiet.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh product data when returning from order screen
+        if (product != null && product.getId() != null) {
+            refreshProductData();
+        }
+    }
+    
+    private void refreshProductData() {
+        productApiService.getProductById(product.getId()).enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    product = response.body();
+                    // Cập nhật UI với dữ liệu mới
+                    tvName.setText(product.getName());
+                    tvPrice.setText(String.format("%.0f VND", product.getPrice()));
+                    
+                    // Cập nhật mô tả
+                    if (product.getDescription() != null && !product.getDescription().isEmpty()) {
+                        StringBuilder desc = new StringBuilder();
+                        for (Product.Description d : product.getDescription()) {
+                            desc.append(d.getField()).append(": ").append(d.getValue()).append("\n");
+                        }
+                        tvDesc.setText(desc.toString());
+                    }
+                    
+                    Log.d("XemChiTiet", "Product refreshed. New quantity: " + product.getQuantity());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                Log.e("XemChiTiet", "Failed to refresh product: " + t.getMessage());
             }
         });
     }

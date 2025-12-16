@@ -316,4 +316,12 @@ public class TrangChuFragment extends Fragment {
             }
         });
     }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh products when returning to home screen (e.g., after placing order)
+        fetchProducts();
+        fetchWishlist();
+    }
 }

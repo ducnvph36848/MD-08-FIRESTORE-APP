@@ -23,7 +23,9 @@ import com.example.md_08_ungdungfivestore.services.ApiClient;
 import com.example.md_08_ungdungfivestore.services.WishlistApiService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,18 +84,18 @@ public class YeuThichFragment extends Fragment {
 
             @Override
             public void onAddClick(Product product) {
-                // Add to cart logic
-                Toast.makeText(getContext(), "Thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                // Click vào trái tim để xóa khỏi wishlist
+                showDeleteConfirmation(product);
             }
 
             @Override
             public void onDeleteClick(Product product) {
-                showDeleteConfirmation(product);
+                // Không sử dụng nữa - đã chuyển sang dùng heart icon
             }
         });
 
-        // Show delete button in wishlist
-        productAdapter.setShowDeleteButton(true);
+        // Ẩn nút delete (X) - dùng heart icon thay thế
+        productAdapter.setShowDeleteButton(false);
 
         danhSachYeuThichRecyclerView.setAdapter(productAdapter);
     }
@@ -115,6 +117,14 @@ public class YeuThichFragment extends Fragment {
                             }
                         }
 
+                        // Tạo Set chứa tất cả product IDs trong wishlist
+                        Set<String> wishlistProductIds = new HashSet<>();
+                        for (Product product : wishlistProducts) {
+                            wishlistProductIds.add(product.getId());
+                        }
+                        
+                        // Cập nhật adapter với wishlist IDs để tô vàng trái tim
+                        productAdapter.setWishlistIds(wishlistProductIds);
                         productAdapter.notifyDataSetChanged();
                         updateUI();
                     }
