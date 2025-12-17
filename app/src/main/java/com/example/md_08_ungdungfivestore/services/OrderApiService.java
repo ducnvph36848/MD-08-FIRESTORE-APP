@@ -28,10 +28,13 @@ public interface OrderApiService {
 
     /**
      * Đặt hàng thanh toán VNPay
+     * body: { "order_id": "123", "total": 100000, "orderInfo": "Thông tin đơn hàng", "ipAddr": "127.0.0.1" }
      */
-    @POST("api/vnpay/create-payment")
-    Call<ApiResponse<String>> createVnPayPayment(@Body Map<String, Integer> body);
 
+    // Định nghĩa đã sửa lại (chính xác)
+
+    @POST("api/vnpay/create-payment")
+    Call<ApiResponse<String>> createVnPayPayment(@Body Map<String, Object> body);
 
     /**
      * Lấy danh sách đơn hàng của user (tất cả trạng thái)
@@ -41,7 +44,6 @@ public interface OrderApiService {
 
     /**
      * Lọc đơn hàng theo trạng thái
-     * 
      * @param status pending, confirmed, processing, shipping, delivered, cancelled
      */
     @GET("api/orders/my-orders")
@@ -58,4 +60,10 @@ public interface OrderApiService {
      */
     @PUT("api/orders/{id}/cancel")
     Call<ApiResponse<Order>> cancelOrder(@Path("id") String orderId);
+
+    /**
+     * Kiểm tra trạng thái thanh toán VNPay theo orderId
+     */
+    @GET("api/payment/{orderId}/status")
+    Call<ApiResponse<String>> checkPaymentStatus(@Path("orderId") String orderId);
 }

@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.md_08_ungdungfivestore.ManDanhGia;
+
 import com.example.md_08_ungdungfivestore.ManThongTinDonHang;
 import com.example.md_08_ungdungfivestore.R;
 import com.example.md_08_ungdungfivestore.models.Order;

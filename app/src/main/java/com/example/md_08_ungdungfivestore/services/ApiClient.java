@@ -15,18 +15,13 @@ import java.io.IOException;
 
 public class ApiClient {
 
- //   public static final String BASE_URL = "http://10.0.2.2:5001/";
-    public static final String BASE_URL = "http://192.168.1.65:5001/";
-
-    public static final String BASE_URL2 = "http://192.168.1.65:5001";
-
-    
+    public static final String BASE_URL = "http://10.0.2.2:5000/";
+    public static final String BASE_URL2 = "http://10.0.2.2:5001";
     private static Retrofit retrofit;
     private static Context appContext;
 
     /**
-     * Khởi tạo ApiClient với context (gọi 1 lần trong Application hoặc
-     * MainActivity)
+     * Khởi tạo ApiClient với context (gọi 1 lần trong Application hoặc MainActivity)
      */
     public static void init(Context context) {
         appContext = context.getApplicationContext();
@@ -58,16 +53,13 @@ public class ApiClient {
         public Response intercept(Chain chain) throws IOException {
             Request originalRequest = chain.request();
 
-            // Nếu chưa init context, thực hiện request bình thường
             if (appContext == null) {
                 return chain.proceed(originalRequest);
             }
 
-            // Lấy token từ TokenManager
             TokenManager tokenManager = new TokenManager(appContext);
             String token = tokenManager.getToken();
 
-            // Nếu có token, thêm vào header
             if (token != null && !token.isEmpty()) {
                 Request newRequest = originalRequest.newBuilder()
                         .header("Authorization", "Bearer " + token)
@@ -79,6 +71,7 @@ public class ApiClient {
         }
     }
 
+    // ===================== API SERVICES =====================
     public static ProductApiService getProductService() {
         return getClient().create(ProductApiService.class);
     }
@@ -90,4 +83,15 @@ public class ApiClient {
     public static CategoryApiService getCategoryService() {
         return getClient().create(CategoryApiService.class);
     }
+
+    public static UserApiService getUserService() {
+        return getClient().create(UserApiService.class);
+    }
+
+    public static OrderApiService getOrderService() {
+        return getClient().create(OrderApiService.class);
+    }
 }
+
+//    public static final String BASE_URL2 = "http://192.168.1.65:5001";
+//   public static final String BASE_URL = "http://10.0.2.2:5001/";

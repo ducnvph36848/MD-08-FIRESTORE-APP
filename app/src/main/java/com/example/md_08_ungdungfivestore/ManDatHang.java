@@ -42,14 +42,12 @@ import retrofit2.Response;
 
 public class ManDatHang extends AppCompatActivity {
 
-    // UI
     private EditText diaChiTxt, hoTenKhachHangTxt, soDienThoaiTxt;
     private TextView tongSoTienTxt, nutThanhToanTxt;
     private ImageButton quayLaiBtn;
     private RadioButton thanhToanRadioBtn, thanhToanTruocRadioBtn;
     private RecyclerView danhSachMuaRecyclerView;
 
-    // Data
     private ArrayList<CartItem> selectedItems;
     private OrderApiService orderApiService;
     private UserApiService userApiService;
@@ -72,10 +70,9 @@ public class ManDatHang extends AppCompatActivity {
 
         anhXa();
 
-        orderApiService = ApiClient.getClient().create(OrderApiService.class);
-        userApiService = ApiClient.getClient().create(UserApiService.class);
+        orderApiService = ApiClient.getOrderService();
+        userApiService = ApiClient.getUserService();
 
-        // Load user profile to auto-fill
         loadUserProfile();
 
         selectedItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("selectedItems");
@@ -101,6 +98,9 @@ public class ManDatHang extends AppCompatActivity {
                 placeOrder(); // COD
             }
         });
+
+        // Xử lý deep link VNPay
+        handleVNPayReturn(getIntent());
     }
 
     private void anhXa() {
@@ -117,15 +117,13 @@ public class ManDatHang extends AppCompatActivity {
 
     private void calculateTotals() {
         subtotal = 0;
-        for (CartItem item : selectedItems) {
-            subtotal += item.getSubtotal();
-        }
+        for (CartItem item : selectedItems) subtotal += item.getSubtotal();
         total = subtotal + shippingFee;
 
         NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
         tongSoTienTxt.setText(formatter.format(total) + " VND");
     }
-    
+
     private void loadUserProfile() {
         userApiService.getCurrentUser().enqueue(new Callback<ApiResponse<UserProfile>>() {
             @Override
@@ -133,26 +131,38 @@ public class ManDatHang extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     UserProfile user = response.body().getData();
                     if (user != null) {
-                        // Tự động điền thông tin nếu có
-                        if (user.getFull_name() != null && !user.getFull_name().isEmpty()) {
-                            hoTenKhachHangTxt.setText(user.getFull_name());
-                        }
-                        if (user.getPhone_number() != null && !user.getPhone_number().isEmpty()) {
-                            soDienThoaiTxt.setText(user.getPhone_number());
-                        }
-                        if (user.getAddress() != null && !user.getAddress().isEmpty()) {
-                            diaChiTxt.setText(user.getAddress());
-                        }
+                        if (user.getFull_name() != null) hoTenKhachHangTxt.setText(user.getFull_name());
+                        if (user.getPhone_number() != null) soDienThoaiTxt.setText(user.getPhone_number());
+                        if (user.getAddress() != null) diaChiTxt.setText(user.getAddress());
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<UserProfile>> call, Throwable t) {
-                // Không hiển thị lỗi, chỉ log
                 Log.e("ManDatHang", "Failed to load user profile: " + t.getMessage());
             }
         });
+    }
+
+    private boolean validateThongTinNguoiNhan() {
+        String name = hoTenKhachHangTxt.getText().toString().trim();
+        String phone = soDienThoaiTxt.getText().toString().trim();
+        String address = diaChiTxt.getText().toString().trim();
+
+        if (name.isEmpty() || name.matches(".*\\d.*")) {
+            hoTenKhachHangTxt.setError("Họ tên không hợp lệ");
+            return false;
+        }
+        if (!phone.matches("^(0|\\+84)[0-9]{9,10}$")) {
+            soDienThoaiTxt.setError("Số điện thoại không hợp lệ");
+            return false;
+        }
+        if (address.length() < 5) {
+            diaChiTxt.setError("Địa chỉ quá ngắn");
+            return false;
+        }
+        return true;
     }
 
     // ===================== COD =====================
@@ -177,12 +187,7 @@ public class ManDatHang extends AppCompatActivity {
         address.setPhone_number(soDienThoaiTxt.getText().toString().trim());
         address.setStreet(diaChiTxt.getText().toString().trim());
 
-        CreateOrderRequest request = new CreateOrderRequest(
-                orderItems,
-                address,
-                shippingFee,
-                total
-        );
+        CreateOrderRequest request = new CreateOrderRequest(orderItems, address, shippingFee, total);
 
         nutThanhToanTxt.setEnabled(false);
         nutThanhToanTxt.setText("Đang xử lý...");
@@ -192,10 +197,8 @@ public class ManDatHang extends AppCompatActivity {
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
                 nutThanhToanTxt.setEnabled(true);
                 nutThanhToanTxt.setText("Thanh toán");
-
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     Toast.makeText(ManDatHang.this, "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                    // Thông báo đặt hàng thành công để refresh danh sách sản phẩm
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -212,15 +215,20 @@ public class ManDatHang extends AppCompatActivity {
         });
     }
 
-    // ===================== VNPAY =====================
+    // ===================== VNPay =====================
     private void thanhToanVnPay() {
         if (!validateThongTinNguoiNhan()) return;
 
         nutThanhToanTxt.setEnabled(false);
         nutThanhToanTxt.setText("Đang chuyển VNPAY...");
 
-        Map<String, Integer> body = new HashMap<>();
-        body.put("amount", (int) total);
+        String orderId = "ORDER_" + System.currentTimeMillis();
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("total", (int) total);
+        body.put("order_id", orderId);
+        body.put("orderInfo", "Thanh toan don hang " + orderId);
+        body.put("ipAddr", "127.0.0.1");
 
         orderApiService.createVnPayPayment(body).enqueue(new Callback<ApiResponse<String>>() {
             @Override
@@ -230,7 +238,8 @@ public class ManDatHang extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     String paymentUrl = response.body().getData();
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl)));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
+                    startActivity(browserIntent);
                 } else {
                     Toast.makeText(ManDatHang.this, "Không tạo được thanh toán VNPAY", Toast.LENGTH_SHORT).show();
                 }
@@ -246,26 +255,46 @@ public class ManDatHang extends AppCompatActivity {
         });
     }
 
-    // ===================== VALIDATE =====================
-    private boolean validateThongTinNguoiNhan() {
-        String name = hoTenKhachHangTxt.getText().toString().trim();
-        String phone = soDienThoaiTxt.getText().toString().trim();
-        String address = diaChiTxt.getText().toString().trim();
+    // ===================== Xử lý deep link VNPay callback =====================
+    private void handleVNPayReturn(Intent intent) {
+        Uri uri = intent.getData();
+        if (uri != null && uri.getPath().equals("/api/vnpay/return")) {
+            String vnpResponseCode = uri.getQueryParameter("vnp_ResponseCode");
+            String orderId = uri.getQueryParameter("vnp_TxnRef");
 
-        if (name.isEmpty() || name.matches(".*\\d.*")) {
-            hoTenKhachHangTxt.setError("Họ tên không hợp lệ");
-            return false;
+            if ("00".equals(vnpResponseCode)) {
+                Toast.makeText(this, "Thanh toán thành công!", Toast.LENGTH_LONG).show();
+                checkPaymentStatus(orderId);
+            } else {
+                Toast.makeText(this, "Thanh toán thất bại!", Toast.LENGTH_LONG).show();
+            }
         }
+    }
 
-        if (!phone.matches("^(0|\\+84)[0-9]{9,10}$")) {
-            soDienThoaiTxt.setError("Số điện thoại không hợp lệ");
-            return false;
-        }
+    private void checkPaymentStatus(String orderId) {
+        orderApiService.checkPaymentStatus(orderId).enqueue(new Callback<ApiResponse<String>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<String>> call, Response<ApiResponse<String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String status = response.body().getData();
+                    if ("PAID".equals(status)) {
+                        Toast.makeText(ManDatHang.this, "Đơn hàng đã thanh toán", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ManDatHang.this, "Đơn hàng chưa thanh toán", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
 
-        if (address.length() < 5) {
-            diaChiTxt.setError("Địa chỉ quá ngắn");
-            return false;
-        }
-        return true;
+            @Override
+            public void onFailure(Call<ApiResponse<String>> call, Throwable t) {
+                Log.e("CheckPayment", t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleVNPayReturn(intent);
     }
 }

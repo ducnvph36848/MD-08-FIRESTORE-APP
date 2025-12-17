@@ -69,19 +69,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:columnCount="2"
+            android:columnCount="4"
             android:alignmentMode="alignMargins"
             android:useDefaultMargins="true">
 
 
             <Button
                 style="@style/SearchCategoryButton"
-                android:text="Áo nam" />
+                android:text="Áo" />
 
 
             <Button
                 style="@style/SearchCategoryButton"
-                android:text="Áo nữ" />
+                android:text="Quần" />
+            <Button
+                style="@style/SearchCategoryButton"
+                android:text="Váy" />
 
 
         </GridLayout>

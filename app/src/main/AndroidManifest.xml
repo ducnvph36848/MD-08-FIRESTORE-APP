@@ -18,6 +18,22 @@
 <!--        <activity-->
 <!--            android:name=".SelectOptionsActivity"-->
 <!--            android:exported="false" />-->
+
+        <activity
+            android:name=".PaymentReturnActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <!-- URL callback từ VNPay -->
+                <data
+                    android:scheme="http"
+                    android:host="10.0.2.2:5000"
+                    android:pathPrefix="/api/vnpay/return"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".OtpActivity"
             android:exported="false" />
