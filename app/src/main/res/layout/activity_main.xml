@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/mauNen"
+
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -51,10 +52,10 @@
             <!-- ICON USER PHẢI -->
             <ImageView
                 android:id="@+id/iconUser"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:src="@drawable/ic_user"
-                android:padding="4dp"
+                android:padding="1dp"
                 android:background="@drawable/bg_avatar_round"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

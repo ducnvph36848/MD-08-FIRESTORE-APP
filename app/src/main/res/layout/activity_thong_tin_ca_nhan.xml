@@ -10,8 +10,8 @@
     <!-- Nút quay lại -->
     <ImageButton
         android:id="@+id/quayLaiBtn"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:layout_marginTop="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"

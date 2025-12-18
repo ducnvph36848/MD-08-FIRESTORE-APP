@@ -36,10 +36,11 @@ public class CaiDatActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        // 4. Thẻ ngân hàng (chưa làm)
-        theNganHangLayout.setOnClickListener(v ->
-                Toast.makeText(this, "Chức năng đang phát triển", Toast.LENGTH_SHORT).show()
-        );
+        // 4. Đổi Mật Khẩu
+        theNganHangLayout.setOnClickListener(v ->{
+            Intent i = new Intent(CaiDatActivity.this,DoiMatKhauActivity.class);
+            startActivity(i);
+        });
 
         // 5. Mở trang cá nhân
         thongTinCaNhanLayout.setOnClickListener(v -> {

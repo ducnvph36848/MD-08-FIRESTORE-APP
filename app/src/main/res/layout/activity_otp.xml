@@ -19,8 +19,8 @@
 
         <ImageButton
             android:id="@+id/quayLaiBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:background="@android:color/transparent"
             android:src="@drawable/quay_lai_img"
             android:contentDescription="Quay lại" />

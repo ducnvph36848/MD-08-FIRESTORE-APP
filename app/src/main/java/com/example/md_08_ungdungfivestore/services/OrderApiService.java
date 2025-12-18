@@ -84,4 +84,7 @@ public interface OrderApiService {
     Call<ApiResponse<Order>> cancelOrder(
             @Path("id") String orderId
     );
+    @POST("api/orders/create-vnpay-payment") // <-- Nhờ backend tạo API endpoint này
+    Call<ApiResponse<String>> createVnPayOrder(@Body CreateOrderRequest request);
+
 }

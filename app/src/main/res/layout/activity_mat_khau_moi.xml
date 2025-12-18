@@ -13,8 +13,8 @@
     <!-- Nút quay lại -->
     <ImageButton
         android:id="@+id/btnBackMatKhauMoi"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:background="#0D0D0D"
         android:src="@drawable/back"
         android:layout_marginBottom="40dp" />

@@ -44,6 +44,7 @@
         <item name="android:textSize">20sp</item>
         <item name="android:background">#FFD700</item>
     </style>
+
     <!-- Theme cho BottomSheetDialogFragment -->
     <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
@@ -51,6 +52,11 @@
 
     <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.MD08" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#D17842</item>
+        <item name="colorSecondary">#D17842</item>
     </style>
 
 </resources>

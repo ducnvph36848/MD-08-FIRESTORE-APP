@@ -64,7 +64,7 @@ public class ThongBaoFragment extends Fragment {
             @Override
             public void run() {
                 loadNotifications();
-                handler.postDelayed(this, 10000); // 10 giây tải lại 1 lần
+                handler.postDelayed(this, 5000); // 10 giây tải lại 1 lần
             }
         };
         handler.post(pollingRunnable);

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.md_08_ungdungfivestore.DoiMatKhauActivity;
 import com.example.md_08_ungdungfivestore.ManDatHang;
 import com.example.md_08_ungdungfivestore.ManDonHang;
 import com.example.md_08_ungdungfivestore.ManLienHe;
@@ -22,7 +23,7 @@ import com.example.md_08_ungdungfivestore.R;
 public class TrangCaNhanFragment extends Fragment {
 
 
-    private LinearLayout btnDonHang, btnTheNganHang, btnThongTinCaNhan, btnLienHe, btnDangXuat;
+    private LinearLayout btnDonHang, btnTheNganHang, btnXacNhanDoiMatKhau, btnLienHe, btnDangXuat;
 
     public TrangCaNhanFragment() {
         // Required empty public constructor
@@ -47,7 +48,7 @@ public class TrangCaNhanFragment extends Fragment {
 
         btnDonHang = view.findViewById(R.id.btnDonHang);
         btnTheNganHang = view.findViewById(R.id.btnTheNganHang);
-        btnThongTinCaNhan = view.findViewById(R.id.btnThongTinCaNhan);
+        btnXacNhanDoiMatKhau = view.findViewById(R.id.btnXacNhanDoiMatKhau);
         btnLienHe = view.findViewById(R.id.btnLienHe);
         btnDangXuat = view.findViewById(R.id.btnDangXuat);
     }
@@ -55,16 +56,17 @@ public class TrangCaNhanFragment extends Fragment {
     private void setupListeners() {
 
         // 1. Chuyển sang màn Đơn hàng
-        btnDonHang.setOnClickListener(
-                v -> {
+        btnDonHang.setOnClickListener(v -> {
                     Log.d("A","START");
                     this.getContext().startActivity(new Intent(this.getContext(), ManDonHang.class));
                 });
-        // 2. Thẻ ngân hàng (chưa làm)
+        // 2. Đổi mật khẩu
+        btnXacNhanDoiMatKhau.setOnClickListener(v -> {
+            Log.d("B","START");
+            this.getContext().startActivity(new Intent(this.getContext(), DoiMatKhauActivity.class));
+        });
+        // 3.
         btnTheNganHang.setOnClickListener(v -> Toast
-                .makeText(getContext(), "Tính năng Thẻ ngân hàng đang phát triển", Toast.LENGTH_SHORT).show());
-        // 3. Mở trang cá nhân
-        btnThongTinCaNhan.setOnClickListener(v -> Toast
                 .makeText(getContext(), "Tính năng Thông tin cá nhân đang phát triển", Toast.LENGTH_SHORT).show());
         // 4. Mở màn liên hệ
         btnLienHe.setOnClickListener(

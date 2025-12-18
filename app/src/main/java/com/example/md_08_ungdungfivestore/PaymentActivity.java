@@ -3,6 +3,7 @@ package com.example.md_08_ungdungfivestore;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,32 +28,37 @@ public class PaymentActivity extends AppCompatActivity {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
 
         webView.setWebViewClient(new WebViewClient() {
+
+            // Android < 24
             @Override
-            public boolean shouldOverrideUrlLoading(
-                    WebView view,
-                    String url
-            ) {
-                if (url.contains("vnp_ResponseCode")) {
-                    handleReturn(url);
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return handleUrl(url);
+            }
+
+            // Android >= 24
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return handleUrl(request.getUrl().toString());
+            }
+
+            private boolean handleUrl(String url) {
+                // ✅ BẮT DEEP LINK VNPay
+                if (url.startsWith("fivestore://app")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                    finish(); // đóng WebView
                     return true;
                 }
                 return false;
             }
         });
 
-        webView.loadUrl(paymentUrl);
-    }
-
-    private void handleReturn(String url) {
-        Uri uri = Uri.parse(url);
-        String responseCode = uri.getQueryParameter("vnp_ResponseCode");
-
-        Intent intent = new Intent();
-        intent.putExtra("orderId", orderId);
-        intent.putExtra("responseCode", responseCode);
-        setResult(RESULT_OK, intent);
-        finish();
+        if (paymentUrl != null) {
+            webView.loadUrl(paymentUrl);
+        }
     }
 }
