@@ -69,36 +69,7 @@
         </LinearLayout>
 
         <!-- Thẻ ngân hàng -->
-        <LinearLayout
-            android:id="@+id/btnTheNganHang"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:paddingVertical="16dp">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_card"
-                app:tint="#D17842" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Thẻ ngân hàng"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_next"
-                app:tint="@color/white" />
-        </LinearLayout>
 
         <!-- Thông tin cá nhân -->
         <LinearLayout
@@ -154,6 +125,36 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Liên hệ"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_next"
+                app:tint="@color/white" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/btnTheNganHang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingVertical="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_card"
+                app:tint="#D17842" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Chính sách bán hàng!"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 

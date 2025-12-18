@@ -2,6 +2,8 @@ package com.example.md_08_ungdungfivestore.fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +24,6 @@ import com.example.md_08_ungdungfivestore.services.ApiClient;
 import com.example.md_08_ungdungfivestore.services.OrderApiService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,6 +38,12 @@ public class DonHangFragment extends Fragment {
     private DonHangAdapter adapter;
     private List<Order> orderList = new ArrayList<>();
     private OrderApiService orderApiService;
+
+    // --- KHAI BÁO BIẾN CHO POLLING (TỰ ĐỘNG RESET) ---
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable refreshRunnable;
+    private final int REFRESH_INTERVAL = 2000; // 2 giây
+    // -------------------------------------------------
 
     public DonHangFragment() {
         // Required empty public constructor
@@ -60,8 +67,7 @@ public class DonHangFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_don_hang, container, false);
 
         recyclerView = view.findViewById(R.id.rcvDonHang);
@@ -72,6 +78,17 @@ public class DonHangFragment extends Fragment {
 
         orderApiService = ApiClient.getClient().create(OrderApiService.class);
 
+        // Khởi tạo Runnable để chạy lặp lại
+        refreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                loadOrders(); // Gọi hàm tải dữ liệu
+                // Lên lịch chạy lại sau 2 giây
+                handler.postDelayed(this, REFRESH_INTERVAL);
+            }
+        };
+
+        // Gọi lần đầu tiên ngay lập tức
         loadOrders();
 
         return view;
@@ -80,39 +97,68 @@ public class DonHangFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadOrders();
+        // Bắt đầu vòng lặp cập nhật khi màn hình hiện lên
+        startAutoRefresh();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Dừng vòng lặp cập nhật khi rời khỏi màn hình để tiết kiệm pin/data
+        stopAutoRefresh();
+    }
+
+    // Hàm bắt đầu cập nhật tự động
+    private void startAutoRefresh() {
+        // Đảm bảo không chạy chồng chéo nhiều luồng
+        stopAutoRefresh();
+        handler.post(refreshRunnable);
+        Log.d("DonHangFragment", "Đã bắt đầu tự động cập nhật mỗi 2s cho tab: " + status);
+    }
+
+    // Hàm dừng cập nhật tự động
+    private void stopAutoRefresh() {
+        if (handler != null && refreshRunnable != null) {
+            handler.removeCallbacks(refreshRunnable);
+            Log.d("DonHangFragment", "Đã dừng tự động cập nhật cho tab: " + status);
+        }
     }
 
     private void loadOrders() {
-        // For "shipping" tab, we need to get all orders and filter client-side
-        // because backend might have different status names (confirmed, processing,
-        // shipping)
+        // Log này để bạn kiểm tra xem nó có chạy mỗi 2s không
+        // Log.d("DonHangFragment", "Đang tải lại đơn hàng...");
+
         orderApiService.getMyOrders().enqueue(new Callback<ApiResponse<List<Order>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Order>>> call, Response<ApiResponse<List<Order>>> response) {
+                if (!isAdded()) return; // Kiểm tra Fragment còn gắn với Activity không
+
                 if (response.isSuccessful() && response.body() != null) {
-                    orderList.clear();
+                    List<Order> newOrderList = new ArrayList<>();
                     if (response.body().getData() != null) {
                         List<Order> allOrders = response.body().getData();
 
                         // Filter based on tab
                         for (Order order : allOrders) {
                             if (shouldShowOrder(order)) {
-                                orderList.add(order);
+                                newOrderList.add(order);
                             }
                         }
                     }
+
+                    // Cập nhật dữ liệu mới vào list
+                    orderList.clear();
+                    orderList.addAll(newOrderList);
                     adapter.notifyDataSetChanged();
 
-                    Log.d("DonHangFragment", "Status filter: " + status + ", Orders count: " + orderList.size());
+                    // Log.d("DonHangFragment", "Status filter: " + status + ", Orders count: " + orderList.size());
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<Order>>> call, Throwable t) {
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), "Lỗi tải đơn hàng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                // Có thể bỏ Toast ở đây để tránh hiện liên tục nếu mất mạng
+                Log.e("DonHangFragment", "Lỗi tải đơn hàng: " + t.getMessage());
             }
         });
     }
@@ -164,7 +210,7 @@ public class DonHangFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     Toast.makeText(getContext(), "Đã hủy đơn hàng", Toast.LENGTH_SHORT).show();
-                    loadOrders(); // Reload list
+                    loadOrders(); // Reload list ngay lập tức
                 } else {
                     Toast.makeText(getContext(), "Không thể hủy đơn hàng", Toast.LENGTH_SHORT).show();
                 }
@@ -187,7 +233,6 @@ public class DonHangFragment extends Fragment {
                 .setTitle("Mua lại")
                 .setMessage("Bạn có muốn mua lại đơn hàng này?")
                 .setPositiveButton("Mua lại", (dialog, which) -> {
-                    // TODO: Add items to cart and navigate to checkout
                     Toast.makeText(getContext(), "Đang thêm vào giỏ hàng...", Toast.LENGTH_SHORT).show();
                     addOrderItemsToCart(order);
                 })
@@ -196,10 +241,8 @@ public class DonHangFragment extends Fragment {
     }
 
     private void addOrderItemsToCart(Order order) {
-        // This would add all items from the order back to cart
-        // For now, just show a message
         if (getContext() != null) {
-            Toast.makeText(getContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "ok", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -1,5 +1,4 @@
 package com.example.md_08_ungdungfivestore.models;
-
 public class LoginRequest {
     private String email;
     private String password;

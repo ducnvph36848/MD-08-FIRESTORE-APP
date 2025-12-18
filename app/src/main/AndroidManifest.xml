@@ -15,9 +15,7 @@
         android:theme="@style/Theme.MD08_UngDungFiveStore"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-<!--        <activity-->
-<!--            android:name=".SelectOptionsActivity"-->
-<!--            android:exported="false" />-->
+
 
         <activity
             android:name=".PaymentReturnActivity"
@@ -91,6 +89,11 @@
         <activity
             android:name=".ManThongTinCaNhan"
             android:exported="true" />
+        <activity
+            android:name=".PaymentActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
 
         <activity
             android:name=".ManChao"

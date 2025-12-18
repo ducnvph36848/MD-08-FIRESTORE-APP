@@ -38,7 +38,7 @@ public class ChatAdapter extends BaseAdapter {
         if (msg.isUser) {
             view = LayoutInflater.from(context).inflate(R.layout.item_user, null);
         } else {
-            view = LayoutInflater.from(context).inflate(R.layout.item_bot, null);
+            view = LayoutInflater.from(context).inflate(R.layout.item_notification, null);
         }
 
         TextView tv = view.findViewById(R.id.txtMessage);

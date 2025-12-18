@@ -21,49 +21,67 @@ import retrofit2.http.Query;
 public interface OrderApiService {
 
     /**
-     * Đặt hàng thanh toán tiền mặt (COD)
+     * ===================== COD =====================
+     * Đặt hàng thanh toán tiền mặt
      */
     @POST("api/orders/cash-order")
-    Call<ApiResponse<Order>> createCashOrder(@Body CreateOrderRequest request);
+    Call<ApiResponse<Order>> createCashOrder(
+            @Body CreateOrderRequest request
+    );
 
     /**
-     * Đặt hàng thanh toán VNPay
-     * body: { "order_id": "123", "total": 100000, "orderInfo": "Thông tin đơn hàng", "ipAddr": "127.0.0.1" }
+     * ===================== VNPAY =====================
+     * Tạo URL thanh toán VNPay
+     * body:
+     * {
+     *   "order_id": "ORDER_123",
+     *   "total": 100000,
+     *   "orderInfo": "Thanh toán đơn hàng",
+     *   "ipAddr": "127.0.0.1"
+     * }
      */
-
-    // Định nghĩa đã sửa lại (chính xác)
-
     @POST("api/vnpay/create-payment")
-    Call<ApiResponse<String>> createVnPayPayment(@Body Map<String, Object> body);
+    Call<ApiResponse<String>> createVnPayPayment(
+            @Body Map<String, Object> body
+    );
 
     /**
-     * Lấy danh sách đơn hàng của user (tất cả trạng thái)
+     * Kiểm tra trạng thái thanh toán VNPay
+     * PAID | PENDING | FAILED
+     */
+    @GET("api/orders/{orderId}/payment-status")
+    Call<ApiResponse<String>> checkPaymentStatus(
+            @Path("orderId") String orderId
+    );
+
+    /**
+     * ===================== ORDERS =====================
+     * Lấy danh sách đơn hàng của user
      */
     @GET("api/orders/my-orders")
     Call<ApiResponse<List<Order>>> getMyOrders();
 
     /**
      * Lọc đơn hàng theo trạng thái
-     * @param status pending, confirmed, processing, shipping, delivered, cancelled
      */
     @GET("api/orders/my-orders")
-    Call<ApiResponse<List<Order>>> getMyOrdersByStatus(@Query("status") String status);
+    Call<ApiResponse<List<Order>>> getMyOrdersByStatus(
+            @Query("status") String status
+    );
 
     /**
-     * Lấy chi tiết đơn hàng theo ID
+     * Lấy chi tiết đơn hàng
      */
     @GET("api/orders/{id}")
-    Call<ApiResponse<Order>> getOrderById(@Path("id") String orderId);
+    Call<ApiResponse<Order>> getOrderById(
+            @Path("id") String orderId
+    );
 
     /**
-     * Hủy đơn hàng (chỉ khi status = pending)
+     * Hủy đơn hàng
      */
     @PUT("api/orders/{id}/cancel")
-    Call<ApiResponse<Order>> cancelOrder(@Path("id") String orderId);
-
-    /**
-     * Kiểm tra trạng thái thanh toán VNPay theo orderId
-     */
-    @GET("api/payment/{orderId}/status")
-    Call<ApiResponse<String>> checkPaymentStatus(@Path("orderId") String orderId);
+    Call<ApiResponse<Order>> cancelOrder(
+            @Path("id") String orderId
+    );
 }

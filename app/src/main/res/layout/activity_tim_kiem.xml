@@ -97,21 +97,7 @@
             android:layout_marginTop="12dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Áo polo nam"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginTop="6dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Áo phông nữ"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginTop="6dp" />
         </LinearLayout>
 
         <!-- Grid sản phẩm -->

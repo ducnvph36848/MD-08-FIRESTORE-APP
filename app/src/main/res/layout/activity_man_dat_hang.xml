@@ -126,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_semibold"
-                    android:text="Thanh toán trước"
+                    android:text="Thanh toán trước (VNPay)"
                     android:textColor="@color/white" />
             </RadioGroup>
         </LinearLayout>

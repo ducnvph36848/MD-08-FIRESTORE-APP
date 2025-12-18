@@ -22,11 +22,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- ICON BELL TRÁI -->
+            <!-- ICON BELL Thông báo -->
             <ImageView
                 android:id="@+id/iconBell"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="40dp"
+                android:layout_height="55dp"
                 android:src="@drawable/bell_solid_full"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

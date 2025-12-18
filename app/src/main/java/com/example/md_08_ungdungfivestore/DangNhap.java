@@ -1,7 +1,6 @@
 package com.example.md_08_ungdungfivestore;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -20,81 +19,65 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+public class DangNhap extends AppCompatActivity {
 
+    private EditText edtEmail, edtPassword;
+    private TextView btnLogin, tvRegister;
 
-    public class DangNhap extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dang_nhap);
 
-        private EditText edtEmail, edtPassword;
-        private TextView btnLogin, tvRegister;
+        edtEmail = findViewById(R.id.edtEmailDangNhap);
+        edtPassword = findViewById(R.id.matKhauDangNhapTextInputEditText);
+        btnLogin = findViewById(R.id.nutDangnhapvSignInTextView);
+        tvRegister = findViewById(R.id.tvRegisterDangNhap);
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_dang_nhap);
+        btnLogin.setOnClickListener(v -> {
+            String email = edtEmail.getText().toString().trim();
+            String password = edtPassword.getText().toString().trim();
 
-            // Gán biến với layout
-            edtEmail = findViewById(R.id.edtEmailDangNhap);
-            edtPassword = findViewById(R.id.matKhauDangNhapTextInputEditText);
-            btnLogin = findViewById(R.id.nutDangnhapvSignInTextView);
-            tvRegister = findViewById(R.id.tvRegisterDangNhap);
+            if (email.isEmpty()) {
+                edtEmail.setError("Vui lòng nhập email");
+                edtEmail.requestFocus();
+                return;
+            }
 
-            // Nút Đăng nhập
-            btnLogin.setOnClickListener(v -> {
-                String email = edtEmail.getText().toString().trim();
-                String password = edtPassword.getText().toString().trim();
+            if (password.isEmpty()) {
+                edtPassword.setError("Vui lòng nhập mật khẩu");
+                edtPassword.requestFocus();
+                return;
+            }
 
-                // ===== Kiểm tra rỗng =====
-                if (email.isEmpty()) {
-                    edtEmail.setError("Vui lòng nhập email");
-                    edtEmail.requestFocus();
-                    return;
-                }
+            if (!email.contains("@") || !email.contains(".")) {
+                edtEmail.setError("Email không hợp lệ gồm có ( @,. )");
+                edtEmail.requestFocus();
+                return;
+            }
 
-                if (password.isEmpty()) {
-                    edtPassword.setError("Vui lòng nhập mật khẩu");
-                    edtPassword.requestFocus();
-                    return;
-                }
+            if (password.length() < 6) {
+                edtPassword.setError("Mật khẩu phải từ 6 ký tự trở lên");
+                edtPassword.requestFocus();
+                return;
+            }
 
-                // ===== Kiểm tra định dạng email =====
-                if (!email.contains("@") || !email.contains(".")) {
-                    edtEmail.setError("Email không hợp lệ gồm có ( @,. )");
-                    edtEmail.requestFocus();
-                    return;
-                }
+            if (!password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*")) {
+                edtPassword.setError("Mật khẩu phải bao gồm cả chữ và số");
+                edtPassword.requestFocus();
+                return;
+            }
 
-                // ===== Kiểm tra mật khẩu =====
-                if (password.length() < 6) {
-                    edtPassword.setError("Mật khẩu phải từ 6 ký tự trở lên ");
-                    edtPassword.requestFocus();
-                    return;
-                }
+            loginUser(email, password);
+        });
 
-                if (!password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*")) {
-                    edtPassword.setError("Mật khẩu phải bao gồm cả chữ và số");
-                    edtPassword.requestFocus();
-                    return;
-                }
+        tvRegister.setOnClickListener(v -> startActivity(new Intent(DangNhap.this, ManDangKy.class)));
 
-                // Nếu hợp lệ, gọi API login
-                loginUser(email, password);
-            });
+        findViewById(R.id.tvResetDangNhap).setOnClickListener(v ->
+                startActivity(new Intent(DangNhap.this, GuiMaXacNhan.class))
+        );
+    }
 
-            // Nút chuyển sang màn đăng ký
-            // Nút chuyển sang màn đăng ký
-            tvRegister.setOnClickListener(v -> {
-                startActivity(new Intent(DangNhap.this, ManDangKy.class));
-            });
-
-            // Nút quên mật khẩu
-            findViewById(R.id.tvResetDangNhap).setOnClickListener(v -> {
-                startActivity(new Intent(DangNhap.this, GuiMaXacNhan.class));
-            });
-        }
-
-
-
-        // Hàm gọi API login
     private void loginUser(String email, String password) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         LoginRequest request = new LoginRequest(email, password);
@@ -109,12 +92,11 @@ import retrofit2.Response;
                     AuthResponse auth = response.body();
                     Log.d("DangNhap", "Success: " + auth.isSuccess() + ", Message: " + auth.getMessage());
 
-                    if (auth.isSuccess()) {
-                        // Lưu token bằng TokenManager
-                        TokenManager tokenManager = new TokenManager(DangNhap.this);
-                        tokenManager.saveToken(auth.getToken());
+                    TokenManager tokenManager = new TokenManager(DangNhap.this);
 
-                        // Lưu user_id nếu có
+                    // Sau khi login thành công
+                    if (auth.isSuccess()) {
+                        tokenManager.saveToken(auth.getToken());
                         if (auth.getUser() != null && auth.getUser().getId() != null) {
                             tokenManager.saveUserId(auth.getUser().getId());
                         }
@@ -126,8 +108,8 @@ import retrofit2.Response;
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
-
-                    } else {
+                    }
+                    else {
                         Toast.makeText(DangNhap.this, auth.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
