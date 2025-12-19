@@ -14,6 +14,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * API Service cho Đơn hàng
@@ -34,15 +35,24 @@ public interface OrderApiService {
      * Tạo URL thanh toán VNPay
      * body:
      * {
-     *   "order_id": "ORDER_123",
-     *   "total": 100000,
-     *   "orderInfo": "Thanh toán đơn hàng",
-     *   "ipAddr": "127.0.0.1"
+     * "order_id": "ORDER_123",
+     * "total": 100000,
+     * "orderInfo": "Thanh toán đơn hàng",
+     * "ipAddr": "127.0.0.1"
      * }
      */
     @POST("api/vnpay/create-payment")
     Call<ApiResponse<String>> createVnPayPayment(
             @Body Map<String, Object> body
+    );
+
+    /**
+     * Xác thực kết quả thanh toán từ VNPay (Return URL)
+     * Mobile App sẽ gửi toàn bộ params nhận được từ Deep Link lên đây để Server verify checksum
+     */
+    @GET("api/vnpay/verify")
+    Call<ApiResponse<Object>> verifyPayment(
+            @QueryMap Map<String, String> params
     );
 
     /**
@@ -84,7 +94,7 @@ public interface OrderApiService {
     Call<ApiResponse<Order>> cancelOrder(
             @Path("id") String orderId
     );
+
     @POST("api/orders/create-vnpay-payment") // <-- Nhờ backend tạo API endpoint này
     Call<ApiResponse<String>> createVnPayOrder(@Body CreateOrderRequest request);
-
 }

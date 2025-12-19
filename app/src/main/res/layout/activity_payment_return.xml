@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/paymentReturnLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,24 +9,60 @@
     android:gravity="center"
     android:background="@android:color/black">
 
+    <!-- Icon trạng thái (Check xanh hoặc X đỏ) -->
+    <ImageView
+        android:id="@+id/imgStatus"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="Status Icon"
+        app:tint="@android:color/white" />
+
+    <!-- Tiêu đề kết quả (Thành công / Thất bại) -->
     <TextView
-        android:id="@+id/tvPaymentStatus"
+        android:id="@+id/tvResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đang kiểm tra trạng thái thanh toán..."
-        android:textSize="18sp"
+        android:text="ĐANG XỬ LÝ..."
+        android:textSize="22sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:gravity="center"
-        android:paddingBottom="24dp"/>
+        android:layout_marginBottom="12dp"/>
 
-    <Button
-        android:id="@+id/btnBackHome"
+    <!-- Mã đơn hàng -->
+    <TextView
+        android:id="@+id/tvOrderId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quay lại trang chủ"
-        android:padding="12dp"
-        android:backgroundTint="@color/bottom_nav_selector"
+        android:text=""
+        android:textSize="16sp"
+        android:textColor="#CCCCCC"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Thông báo chi tiết -->
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vui lòng đợi trong giây lát..."
+        android:textSize="16sp"
         android:textColor="@android:color/white"
-        android:visibility="gone"/>
+        android:gravity="center"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- Nút quay về -->
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quay về trang chủ"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:backgroundTint="#FF5722"
+        android:visibility="visible"/>
+
 </LinearLayout>

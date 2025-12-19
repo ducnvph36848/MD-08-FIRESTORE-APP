@@ -215,64 +215,123 @@ public class ManDatHang extends AppCompatActivity {
         });
     }
 
-    // ===================== VNPay =====================
-    // ===================== VNPay =====================
+
+
+    // ===================== VNPay: QUY TRÌNH MỚI =====================
     private void thanhToanVnPay() {
         if (!validateThongTinNguoiNhan()) return;
 
+        // 1. Chuẩn bị dữ liệu tạo đơn hàng
+        List<CreateOrderRequest.OrderItemRequest> orderItems = new ArrayList<>();
+        for (CartItem cartItem : selectedItems) {
+            orderItems.add(new CreateOrderRequest.OrderItemRequest(
+                    cartItem.getProduct_id(),
+                    cartItem.getName(),
+                    cartItem.getImage(),
+                    cartItem.getSize(),
+                    cartItem.getColor(),
+                    cartItem.getQuantity(),
+                    cartItem.getPrice()
+            ));
+        }
+
+        Address address = new Address();
+        address.setFull_name(hoTenKhachHangTxt.getText().toString().trim());
+        address.setPhone_number(soDienThoaiTxt.getText().toString().trim());
+        address.setStreet(diaChiTxt.getText().toString().trim());
+
+        // 🟢 QUAN TRỌNG: Thiết lập payment_method là "VNPAY" hoặc "ONLINE"
+        // Kiểm tra xem Constructor của CreateOrderRequest có hỗ trợ tham số này không.
+        // Nếu không có constructor này, hãy dùng setter: request.setPaymentMethod("VNPAY");
+        CreateOrderRequest request = new CreateOrderRequest(orderItems, address, shippingFee, total);
+
+        // Giả sử bạn có setter (nếu không hãy sửa constructor như bước 1)
+        request.setPayment_method("VNPAY");
+
         nutThanhToanTxt.setEnabled(false);
+        nutThanhToanTxt.setText("Đang tạo đơn...");
+
+        // 2. GỌI API TẠO ĐƠN HÀNG TRƯỚC (Server sẽ lưu trạng thái là Pending + Method là VNPAY)
+        orderApiService.createCashOrder(request).enqueue(new Callback<ApiResponse<Order>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+
+                    // Lấy Order ID vừa tạo từ Server
+                    Order createdOrder = response.body().getData();
+                    String orderId = createdOrder.get_id();
+
+                    // 3. CÓ ORDER ID RỒI MỚI GỌI VNPAY
+                    Log.d("VNPAY", "Tạo đơn ONLINE thành công: " + orderId + ". Đang lấy link...");
+                    goiVnPayTuOrderId(orderId);
+
+                } else {
+                    nutThanhToanTxt.setEnabled(true);
+                    nutThanhToanTxt.setText("Thanh toán");
+                    Toast.makeText(ManDatHang.this, "Không thể tạo đơn hàng", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
+                nutThanhToanTxt.setEnabled(true);
+                nutThanhToanTxt.setText("Thanh toán");
+                Toast.makeText(ManDatHang.this, "Lỗi tạo đơn: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Hàm phụ: Gọi lấy link VNPay
+    private void goiVnPayTuOrderId(String orderId) {
         nutThanhToanTxt.setText("Đang chuyển VNPAY...");
 
-        String orderId = "ORDER_" + System.currentTimeMillis();
-
         Map<String, Object> body = new HashMap<>();
-        body.put("amount", (int) total); // VNPAY x100 xử lý backend
+        body.put("amount", (int) total);
         body.put("orderId", orderId);
         body.put("orderInfo", "Thanh toan don hang " + orderId);
 
-        orderApiService.createVnPayPayment(body)
-                .enqueue(new Callback<ApiResponse<String>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<String>> call,
-                                           Response<ApiResponse<String>> response) {
-                        nutThanhToanTxt.setEnabled(true);
-                        nutThanhToanTxt.setText("Thanh toán");
+        orderApiService.createVnPayPayment(body).enqueue(new Callback<ApiResponse<String>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<String>> call, Response<ApiResponse<String>> response) {
+                nutThanhToanTxt.setEnabled(true);
+                nutThanhToanTxt.setText("Thanh toán");
 
-                        if (response.isSuccessful()
-                                && response.body() != null
-                                && response.body().isSuccess()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Dùng getData() vì ApiResponse đã được cập nhật để bắt key paymentUrl/data
+                    String paymentUrl = response.body().getData();
 
-                            String paymentUrl = response.body().getData();
+                    if (paymentUrl != null && !paymentUrl.isEmpty() && paymentUrl.startsWith("http")) {
+                        Intent intent = new Intent(ManDatHang.this, PaymentActivity.class);
+                        intent.putExtra("paymentUrl", paymentUrl);
+                        intent.putExtra("orderId", orderId);
+                        startActivity(intent);
 
-                            Intent intent = new Intent(
-                                    ManDatHang.this,
-                                    PaymentActivity.class
-                            );
-                            intent.putExtra("paymentUrl", paymentUrl);
-                            intent.putExtra("orderId", orderId);
-                            startActivity(intent);
-
-                        } else {
-                            Toast.makeText(
-                                    ManDatHang.this,
-                                    "Không tạo được thanh toán VNPay",
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        }
+                        // Không finish() ở đây để chờ onNewIntent bắt kết quả trả về
+                    } else {
+                        Toast.makeText(ManDatHang.this, "Lỗi link thanh toán từ Server", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(ManDatHang.this, "Lỗi tạo thanh toán", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-                    @Override
-                    public void onFailure(Call<ApiResponse<String>> call, Throwable t) {
-                        nutThanhToanTxt.setEnabled(true);
-                        nutThanhToanTxt.setText("Thanh toán");
-                        Toast.makeText(
-                                ManDatHang.this,
-                                "Lỗi kết nối VNPay",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                });
+            @Override
+            public void onFailure(Call<ApiResponse<String>> call, Throwable t) {
+                nutThanhToanTxt.setEnabled(true);
+                nutThanhToanTxt.setText("Thanh toán");
+                Toast.makeText(ManDatHang.this, "Lỗi kết nối VNPay", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    // 🟢 QUAN TRỌNG: Thêm onNewIntent để nhận kết quả khi từ VNPay quay lại App
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent); // Cập nhật intent mới
+        handleVNPayReturn(intent);
+    }
+
 
 
     // ===================== Xử lý deep link VNPay callback =====================

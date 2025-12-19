@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.md_08_ungdungfivestore">
 
+    <!-- Quyền truy cập Internet (Bắt buộc để gọi API và load WebView) -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -17,7 +19,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <!-- ✅ Activity nhận kết quả VNPay qua Deep Link -->
+        <!-- ✅ 1. Cấu hình PaymentReturnActivity để bắt Deep Link từ VNPay -->
+        <!-- launchMode="singleTask": Giúp tái sử dụng Activity nếu đã tồn tại thay vì tạo mới -->
         <activity
             android:name=".PaymentReturnActivity"
             android:exported="true"
@@ -25,11 +28,11 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- ⚠️ PHẢI ĐÚNG 100% -->
+                <!-- ⚠️ QUAN TRỌNG: scheme và host phải khớp với code Backend trả về -->
+                <!-- Backend trả về: fivestore://app?... -->
                 <data
                     android:scheme="fivestore"
                     android:host="app" />
@@ -37,8 +40,13 @@
 
         </activity>
 
-        <!-- ===== CÁC ACTIVITY CŨ – GIỮ NGUYÊN ===== -->
+        <!-- ✅ 2. Cấu hình PaymentActivity (WebView) -->
+        <activity
+            android:name=".PaymentActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <!-- ===== CÁC ACTIVITY  ===== -->
         <activity android:name=".OtpActivity" android:exported="false" />
         <activity android:name=".CaiDatActivity" android:exported="false" />
         <activity android:name=".MatKhauMoi" android:exported="false" />
@@ -59,11 +67,8 @@
         <activity android:name=".ManThongTinDonHang" android:exported="true" />
         <activity android:name=".ManThongTinCaNhan" android:exported="true" />
 
-        <activity
-            android:name=".PaymentActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <!-- Màn hình Chào (Launcher) -->
         <activity
             android:name=".ManChao"
             android:exported="true">
