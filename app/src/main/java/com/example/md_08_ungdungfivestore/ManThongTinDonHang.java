@@ -111,14 +111,28 @@ public class ManThongTinDonHang extends AppCompatActivity {
 
         // Address
         if (currentOrder.getAddress() != null) {
-            tenNguoiNhanTextView.setText(
-                    currentOrder.getAddress().getFull_name() + " | " + currentOrder.getAddress().getPhone_number());
+            tenNguoiNhanTextView.setText(currentOrder.getAddress().getFull_name() + " | " + currentOrder.getAddress().getPhone_number());
             diaChiTextView.setText(currentOrder.getAddress().getStreet());
         }
 
-        // Total
-        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
-        tongTienSanPhamTextView.setText(formatter.format(currentOrder.getTotal_amount()) + " VND");
+        // Total + Shipping Fee
+        // Định dạng tiền theo VN
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+       // Lấy tổng tiền sản phẩm từ order
+        double orderTotal = Double.parseDouble(String.valueOf(currentOrder.getTotal_amount()));
+
+        // Phí ship cố định
+        double shippingFee = 30000;
+
+        // Tổng cộng
+        double finalTotal = orderTotal + shippingFee;
+
+        // Hiển thị chi tiết
+        tongTienSanPhamTextView.setText(
+                        "+ Phí ship: " + formatter.format(shippingFee)
+        );
+
 
         // Status & Buttons
         if ("pending".equals(currentOrder.getStatus())) {
@@ -141,6 +155,10 @@ public class ManThongTinDonHang extends AppCompatActivity {
 
             if (firstItem.getProduct_id() != null) {
                 tenSanPhamTextView.setText(firstItem.getProduct_id().getName() + " (x" + firstItem.getQuantity() + ")");
+                double itemPrice = firstItem.getProduct_id().getPrice();
+                String formattedPrice = formatter.format(itemPrice) + " VND";
+                tenSanPhamTextView.append("\nGiá: " + formattedPrice);
+
                 String imageUrl = firstItem.getProduct_id().getImage();
                 if (imageUrl != null && !imageUrl.startsWith("http")) {
                     imageUrl = ApiClient.BASE_URL2 + imageUrl;
@@ -148,6 +166,9 @@ public class ManThongTinDonHang extends AppCompatActivity {
                 Glide.with(this).load(imageUrl).into(anhDonHangImageView);
             } else {
                 tenSanPhamTextView.setText(firstItem.getName() + " (x" + firstItem.getQuantity() + ")");
+                double itemPrice = firstItem.getPrice();
+                String formattedPrice = formatter.format(itemPrice) + " VND";
+                tenSanPhamTextView.append("\nGiá: " + formattedPrice);
             }
         }
     }
@@ -167,7 +188,7 @@ public class ManThongTinDonHang extends AppCompatActivity {
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     Toast.makeText(ManThongTinDonHang.this, "Đã hủy đơn hàng", Toast.LENGTH_SHORT).show();
-                    finish(); // Go back to list
+                    finish();
                 } else {
                     Toast.makeText(ManThongTinDonHang.this, "Không thể hủy đơn hàng", Toast.LENGTH_SHORT).show();
                 }

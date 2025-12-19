@@ -68,7 +68,7 @@
         android:id="@+id/btnVerify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/nen_nut"
         android:fontFamily="@font/poppins_semibold"
         android:padding="15dp"

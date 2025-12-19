@@ -1,5 +1,6 @@
 package com.example.md_08_ungdungfivestore.services;
 
+import com.example.md_08_ungdungfivestore.models.AddToCartRequest;
 import com.example.md_08_ungdungfivestore.models.ApiResponse;
 import com.example.md_08_ungdungfivestore.models.ChangePasswordRequest;
 import com.example.md_08_ungdungfivestore.models.UpdateProfileRequest;
@@ -39,4 +40,7 @@ public interface UserApiService {
      */
     @POST("api/auth/logout")
     Call<ApiResponse<Void>> logout();
+    // mua lại
+    @POST("api/cart/add") // Endpoint của bạn
+    Call<ApiResponse<Object>> addToCart(@Body AddToCartRequest request);
 }

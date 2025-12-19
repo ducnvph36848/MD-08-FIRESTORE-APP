@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ApiResponse<T> {
 
+
     // Bắt cả "success", "isSuccess", và "status" (nếu status=true)
     @SerializedName(value = "success", alternate = {"isSuccess", "status"})
     private boolean success;

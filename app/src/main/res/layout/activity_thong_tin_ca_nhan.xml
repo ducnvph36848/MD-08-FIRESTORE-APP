@@ -94,6 +94,6 @@
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         app:cornerRadius="28dp"
-        app:backgroundTint="#FFA500"/>
+        app:backgroundTint="#C75A01"/>
 
 </LinearLayout>

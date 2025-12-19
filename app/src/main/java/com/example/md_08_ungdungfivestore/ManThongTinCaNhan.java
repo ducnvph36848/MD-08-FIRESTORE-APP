@@ -101,15 +101,42 @@ public class ManThongTinCaNhan extends AppCompatActivity {
 
     private void saveUserInfo() {
         String name = edtName.getText().toString().trim();
+        String email = edtEmail.getText().toString().trim();
         String phone = edtPhone.getText().toString().trim();
         String address = edtAddress.getText().toString().trim();
 
+        // Validate họ tên
         if (name.isEmpty()) {
             edtName.setError("Vui lòng nhập họ tên");
             return;
         }
 
-        // Keep existing info if not changed or passed
+        // Validate email
+        if (email.isEmpty()) {
+            edtEmail.setError("Vui lòng nhập email");
+            return;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            edtEmail.setError("Email không hợp lệ");
+            return;
+        }
+
+        // Validate số điện thoại
+        if (phone.isEmpty()) {
+            edtPhone.setError("Vui lòng nhập số điện thoại");
+            return;
+        } else if (!phone.matches("^(0[0-9]{9})$")) {
+            // Ví dụ: kiểm tra số bắt đầu bằng 0 và có 10 chữ số
+            edtPhone.setError("Số điện thoại không hợp lệ bắt đầu bằng 0 và có 10 chữ số");
+            return;
+        }
+
+        // Validate địa chỉ
+        if (address.isEmpty()) {
+            edtAddress.setError("Vui lòng nhập địa chỉ");
+            return;
+        }
+
+        // Giữ thông tin cũ nếu không thay đổi
         String dob = currentUser != null ? currentUser.getDate_of_birth() : "";
         String gender = currentUser != null ? currentUser.getGender() : "0";
         String avatar = currentUser != null ? currentUser.getAvatar_url() : "";
@@ -128,17 +155,8 @@ public class ManThongTinCaNhan extends AppCompatActivity {
             public void onResponse(Call<ApiResponse<UserProfile>> call, Response<ApiResponse<UserProfile>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(ManThongTinCaNhan.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
-                    
-                    // Update current user
                     if (response.body().getData() != null) {
-                         currentUser = response.body().getData();
-                         // Update token if it's returned in response (optional, usually handled by interceptor or response object)
-                         // But here we rely on the backend response structure.
-                         // Check controller: it returns { message, user, token } - NOT wrapped in ApiResponse standard data structure for token usually?
-                         // actually controller returns: res.json({ message, user, token })
-                         // But ApiResponse expects { success, message, data }
-                         // If backend structure is different, we might have parsing issue. 
-                         // Let's check ApiResponse class later if needed. For now assume standard wrapper or simple object.
+                        currentUser = response.body().getData();
                     }
                     finish();
                 } else {
@@ -152,4 +170,5 @@ public class ManThongTinCaNhan extends AppCompatActivity {
             }
         });
     }
+
 }

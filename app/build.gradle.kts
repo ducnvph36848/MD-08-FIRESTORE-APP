@@ -73,4 +73,6 @@ dependencies {
     implementation(libs.converter.gson)
 
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    //bo góc
+    implementation("com.google.android.material:material:1.12.0")
 }

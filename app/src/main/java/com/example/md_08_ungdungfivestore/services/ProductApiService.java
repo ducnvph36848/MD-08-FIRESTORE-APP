@@ -1,6 +1,10 @@
 package com.example.md_08_ungdungfivestore.services;
 
+// ✅ THÊM DÒNG IMPORT NÀYimport com.example.md_08_ungdungfivestore.models.ApiResponse;
+
 import com.example.md_08_ungdungfivestore.models.Product;
+import com.example.md_08_ungdungfivestore.models.ReviewRequest;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,4 +50,8 @@ public interface ProductApiService {
     // ⭐ Toggle featured
     @PUT("api/products/{id}/featured")
     Call<Product> toggleFeatured(@Path("id") String id);
+
+    // Đánh Giá
+    // Thêm method này vào interface ProductApiService hoặc OrderApiService tùy backend của bạn
+
 }

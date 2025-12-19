@@ -1,6 +1,8 @@
 package com.example.md_08_ungdungfivestore.services;
 
+import com.example.md_08_ungdungfivestore.models.AddToCartRequest;
 import com.example.md_08_ungdungfivestore.models.ApiResponse;
+import com.example.md_08_ungdungfivestore.models.CartItem;
 import com.example.md_08_ungdungfivestore.models.CreateOrderRequest;
 import com.example.md_08_ungdungfivestore.models.Order;
 
@@ -94,6 +96,11 @@ public interface OrderApiService {
     Call<ApiResponse<Order>> cancelOrder(
             @Path("id") String orderId
     );
+    //Mua lai
+    // Ví dụ trong UserApiService.java hoặc CartApiService.java
+    @POST("api/cart/add")
+    Call<ApiResponse<CartItem>> addToCart(@Body AddToCartRequest request);
+
 
     @POST("api/orders/create-vnpay-payment") // <-- Nhờ backend tạo API endpoint này
     Call<ApiResponse<String>> createVnPayOrder(@Body CreateOrderRequest request);

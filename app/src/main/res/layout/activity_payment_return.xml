@@ -62,7 +62,7 @@
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:padding="12dp"
-        android:backgroundTint="#FF5722"
+        android:backgroundTint="#A64211"
         android:visibility="visible"/>
 
 </LinearLayout>
