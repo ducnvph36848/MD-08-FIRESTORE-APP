@@ -25,21 +25,22 @@ public class CreateOrderRequest {
     @SerializedName("cart_item_ids")
     private List<String> cart_item_ids;
 
-    // --- THÊM TRƯỜNG MỚI ---
-    // Tên key JSON phải khớp với server (ví dụ: "payment_method" hoặc "paymentMethod")
-    @SerializedName("payment_method")
+    // --- SỬA QUAN TRỌNG TẠI ĐÂY ---
+    // Gson sẽ chuyển biến này thành key json "paymentMethod" khi gửi lên server.
+    // Server Node.js của bạn đang đọc req.body.paymentMethod.
+    @SerializedName("paymentMethod")
     private String payment_method;
 
     public CreateOrderRequest() {
     }
 
-    // Constructor cũ (giữ lại để tương thích nếu cần, mặc định là COD)
+    // Constructor cũ (mặc định COD)
     public CreateOrderRequest(List<OrderItemRequest> items, Address address,
                               double shipping_fee, double total_amount) {
         this(items, address, shipping_fee, total_amount, null, "COD");
     }
 
-    // Constructor mở rộng (thêm payment_method)
+    // Constructor mở rộng
     public CreateOrderRequest(List<OrderItemRequest> items, Address address,
                               double shipping_fee, double total_amount,
                               List<String> cart_item_ids, String payment_method) {
@@ -52,7 +53,7 @@ public class CreateOrderRequest {
         this.payment_method = payment_method;
     }
 
-    // Constructor dùng trong ManDatHang (đơn giản hóa)
+    // Constructor dùng trong ManDatHang
     public CreateOrderRequest(List<OrderItemRequest> items, Address address,
                               double shipping_fee, double total_amount, String payment_method) {
         this.items = items;
@@ -151,7 +152,6 @@ public class CreateOrderRequest {
             this.price = price;
         }
 
-        // Getters and Setters
         public String getProduct_id() { return product_id; }
         public void setProduct_id(String product_id) { this.product_id = product_id; }
 

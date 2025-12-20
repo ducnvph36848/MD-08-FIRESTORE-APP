@@ -99,7 +99,7 @@ public class ManDatHang extends AppCompatActivity {
             }
         });
 
-        // Xử lý deep link VNPay
+        // Xử lý deep link VNPay khi quay lại app
         handleVNPayReturn(getIntent());
     }
 
@@ -165,7 +165,7 @@ public class ManDatHang extends AppCompatActivity {
         return true;
     }
 
-    // ===================== COD =====================
+    // ===================== LUỒNG 1: COD (THANH TOÁN KHI NHẬN HÀNG) =====================
     private void placeOrder() {
         if (!validateThongTinNguoiNhan()) return;
 
@@ -189,6 +189,9 @@ public class ManDatHang extends AppCompatActivity {
 
         CreateOrderRequest request = new CreateOrderRequest(orderItems, address, shippingFee, total);
 
+        // 🟢 SỬA 1: Set cứng là "cash" để Server hiểu là COD
+        request.setPayment_method("cash");
+
         nutThanhToanTxt.setEnabled(false);
         nutThanhToanTxt.setText("Đang xử lý...");
 
@@ -202,7 +205,7 @@ public class ManDatHang extends AppCompatActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(ManDatHang.this, "Đặt hàng thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManDatHang.this, "Đặt hàng thất bại: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -215,9 +218,7 @@ public class ManDatHang extends AppCompatActivity {
         });
     }
 
-
-
-    // ===================== VNPay: QUY TRÌNH MỚI =====================
+    // ===================== LUỒNG 2: THANH TOÁN ONLINE (VNPAY) =====================
     private void thanhToanVnPay() {
         if (!validateThongTinNguoiNhan()) return;
 
@@ -240,18 +241,15 @@ public class ManDatHang extends AppCompatActivity {
         address.setPhone_number(soDienThoaiTxt.getText().toString().trim());
         address.setStreet(diaChiTxt.getText().toString().trim());
 
-        // 🟢 QUAN TRỌNG: Thiết lập payment_method là "VNPAY" hoặc "ONLINE"
-        // Kiểm tra xem Constructor của CreateOrderRequest có hỗ trợ tham số này không.
-        // Nếu không có constructor này, hãy dùng setter: request.setPaymentMethod("VNPAY");
         CreateOrderRequest request = new CreateOrderRequest(orderItems, address, shippingFee, total);
 
-        // Giả sử bạn có setter (nếu không hãy sửa constructor như bước 1)
-        request.setPayment_method("VNPAY");
+        // 🟢 SỬA 2: Set là "ONLINE" để Server nhận diện là đơn chờ thanh toán
+        request.setPayment_method("ONLINE");
 
         nutThanhToanTxt.setEnabled(false);
         nutThanhToanTxt.setText("Đang tạo đơn...");
 
-        // 2. GỌI API TẠO ĐƠN HÀNG TRƯỚC (Server sẽ lưu trạng thái là Pending + Method là VNPAY)
+        // 2. GỌI API TẠO ĐƠN HÀNG TRƯỚC (Server sẽ lưu trạng thái là Pending + Method là ONLINE)
         orderApiService.createCashOrder(request).enqueue(new Callback<ApiResponse<Order>>() {
             @Override
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
@@ -259,11 +257,16 @@ public class ManDatHang extends AppCompatActivity {
 
                     // Lấy Order ID vừa tạo từ Server
                     Order createdOrder = response.body().getData();
-                    String orderId = createdOrder.get_id();
-
-                    // 3. CÓ ORDER ID RỒI MỚI GỌI VNPAY
-                    Log.d("VNPAY", "Tạo đơn ONLINE thành công: " + orderId + ". Đang lấy link...");
-                    goiVnPayTuOrderId(orderId);
+                    if (createdOrder != null) {
+                        String orderId = createdOrder.get_id();
+                        // 3. CÓ ORDER ID RỒI MỚI GỌI VNPAY
+                        Log.d("VNPAY", "Tạo đơn ONLINE thành công: " + orderId + ". Đang lấy link...");
+                        goiVnPayTuOrderId(orderId);
+                    } else {
+                        nutThanhToanTxt.setEnabled(true);
+                        nutThanhToanTxt.setText("Thanh toán");
+                        Toast.makeText(ManDatHang.this, "Lỗi: Không lấy được Order ID", Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
                     nutThanhToanTxt.setEnabled(true);
@@ -332,8 +335,6 @@ public class ManDatHang extends AppCompatActivity {
         handleVNPayReturn(intent);
     }
 
-
-
     // ===================== Xử lý deep link VNPay callback =====================
     private void handleVNPayReturn(Intent intent) {
         Uri uri = intent.getData();
@@ -375,5 +376,4 @@ public class ManDatHang extends AppCompatActivity {
                     }
                 });
     }
-
 }
